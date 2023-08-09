@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "240419193243",
+    "project_id": "meus-gastos-7d0de",
+    "storage_bucket": "meus-gastos-7d0de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240419193243:android:bb07b02c497f27c55ae13e",
+        "android_client_info": {
+          "package_name": "com.example.meus_gastos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "240419193243-ktq366bqceduoajfvjao86s1ulu6n2q4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meus_gastos",
+            "certificate_hash": "5299054f3baad3f8ed2c8d523e867ffca7526ef4"
+          }
+        },
+        {
+          "client_id": "240419193243-3oo8i42o05lcsp8rhpuvgv79226omaor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAziGfFeT8f8rKLrQcNmm_1grlCs3DidjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "240419193243-3oo8i42o05lcsp8rhpuvgv79226omaor.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
