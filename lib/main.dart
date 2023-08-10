@@ -4,6 +4,7 @@ import 'package:meus_gastos/core/bindings.dart';
 import 'package:meus_gastos/firebase_options.dart';
 import 'package:meus_gastos/pages/auth/login/login_router.dart';
 import 'package:meus_gastos/pages/auth/register/register_router.dart';
+import 'package:meus_gastos/pages/categories/categories_list/categories_list_router.dart';
 import 'package:meus_gastos/pages/home/home.dart';
 
 Future<void> main() async {
@@ -25,13 +26,21 @@ class MyApp extends StatelessWidget {
         title: 'Meus Gastos',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            selectedItemColor: Color(0xff5EA3A3),
+            unselectedItemColor: Color(0xff5EA3A3),
+            backgroundColor: Colors.white,
+            type: BottomNavigationBarType.fixed,
+            elevation: 1,
+          ),
           useMaterial3: false,
         ),
         routes: {
           '/': (context) => LoginRouter.page,
           "/register": (context) => RegisterRouter.page,
           "/home": (context) => const HomePage(),
-        },
+          "/categories":(context) => CategoriesListRouter.page,
+        }
       ),
     );
   }
