@@ -14,7 +14,7 @@ class LoginController extends Cubit<LoginState> {
       await _authRepository.login(email: email, password: password);
       await _authRepository.reload();
       emit(state.copyWith(status: LoginStatus.success));
-    } on Exception catch (e, s) {
+    } catch (e, s) {
       log("Erro ao realizar login.", error: e, stackTrace: s);
       emit(state.copyWith(status: LoginStatus.error));
     }
