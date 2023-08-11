@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meus_gastos/core/base_state.dart';
 import 'package:meus_gastos/pages/categories/categories_list/categories_list_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +10,19 @@ class CategoriesList extends StatefulWidget {
   State<CategoriesList> createState() => _CategoriesListState();
 }
 
-class _CategoriesListState extends State<CategoriesList> {
+class _CategoriesListState
+    extends BaseState<CategoriesList, CategoriesListController> {
+  final GlobalKey<FormState> key = GlobalKey();
+  final category = TextEditingController();
+  final description = TextEditingController();
+
+  @override
+  void dispose() {
+    category.dispose();
+    description.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var selectedIndex = 1;
@@ -30,7 +43,159 @@ class _CategoriesListState extends State<CategoriesList> {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    isDismissible: true,
+                    context: context,
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: .9,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 36.0, left: 8.0, bottom: 18.0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Adicionar Categorias",
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black.withOpacity(0.7),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Form(
+                              key: key,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.05),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: TextFormField(
+                                          controller: category,
+                                          decoration: InputDecoration(
+                                            hintText: "ex: Casa",
+                                            labelText: "Nome da categoria",
+                                            labelStyle: TextStyle(
+                                                color: Colors.grey
+                                                    .withOpacity(0.7)),
+                                            hintStyle: const TextStyle(
+                                                color: Colors.grey),
+                                            border: InputBorder.none,
+                                            fillColor: Colors.grey,
+                                          ),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Categoria obrigatória";
+                                            }
+                                            return null;
+                                          }),
+                                    ),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 34.0,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.withOpacity(0.05),
+                                        ),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: TextFormField(
+                                              controller: description,
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    "ex: Gastos relacionados a moradia...",
+                                                labelText:
+                                                    "Descrição da categoria",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.7)),
+                                                hintStyle: const TextStyle(
+                                                  color: Colors.grey,
+                                                ),
+                                                border: InputBorder.none,
+                                                fillColor: Colors.grey,
+                                              ),
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Descrição obrigatória";
+                                                }
+                                                return null;
+                                              }),
+                                        ),
+                                      )),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.only(
+                                        left: 10.0,
+                                        right: 10.0,
+                                        top: 48.0,
+                                        bottom: 36.0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        if (key.currentState?.validate() ??
+                                            false) {}
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff5EA3A3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                        padding: const EdgeInsets.only(
+                                            top: 18.0, bottom: 18.0),
+                                      ),
+                                      child: const Text(
+                                        "SALVAR",
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.only(
+                                        left: 10.0, right: 10.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        nav.pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff5EA3A3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                        padding: const EdgeInsets.only(
+                                            top: 18.0, bottom: 18.0),
+                                      ),
+                                      child: const Text(
+                                        "CANCELAR",
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              },
               icon: const Icon(
                 Icons.add,
                 color: Color(0xff5EA3A3),
@@ -80,7 +245,8 @@ class _CategoriesListState extends State<CategoriesList> {
                     //   "Nenhum lançamento neste período",
                     //   style: TextStyle(fontSize: 22, color: Color(0xff5EA3A3)),
                     // ),
-                      CircularProgressIndicator.adaptive(backgroundColor: Color(0xff5ea3a3)),
+                    CircularProgressIndicator.adaptive(
+                        backgroundColor: Color(0xff5ea3a3)),
                   ],
                 ),
               ),
