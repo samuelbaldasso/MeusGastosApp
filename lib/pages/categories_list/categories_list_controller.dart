@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meus_gastos/pages/categories/categories_list/categories_list_state.dart';
+import 'package:meus_gastos/pages/categories_list/categories_list_state.dart';
 import 'package:meus_gastos/repositories/auth_repository.dart';
 
 class CategoriesListController extends Cubit<CategoriesListState>{

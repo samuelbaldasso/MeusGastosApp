@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meus_gastos/core/base_state.dart';
-import 'package:meus_gastos/pages/categories/categories_list/categories_list_controller.dart';
-import 'package:provider/provider.dart';
+import 'package:meus_gastos/pages/categories_list/categories_list_controller.dart';
 
 class CategoriesList extends StatefulWidget {
   const CategoriesList({super.key});
@@ -33,7 +32,7 @@ class _CategoriesListState
         backgroundColor: Colors.white,
         title: InkWell(
           onTap: () {
-            context.read<CategoriesListController>().logout();
+            controller.logout();
             nav.popAndPushNamed("/");
           },
           child: const Text(
