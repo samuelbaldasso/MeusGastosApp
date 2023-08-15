@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:meus_gastos/pages/auth/login/login_state.dart';
-import 'package:meus_gastos/repositories/auth_repository.dart';
+import 'package:meus_gastos/repositories/auth/auth_repository.dart';
 
 class LoginController extends Cubit<LoginState> {
   final AuthRepository _authRepository;

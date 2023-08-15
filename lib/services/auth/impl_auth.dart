@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meus_gastos/repositories/auth_repository.dart';
-import 'package:meus_gastos/services/auth.dart';
+import 'package:meus_gastos/repositories/auth/auth_repository.dart';
+import 'package:meus_gastos/services/auth/auth.dart';
 
 class ImplAuthService implements AuthService {
   final AuthRepository authRepository;

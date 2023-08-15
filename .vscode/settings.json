@@ -1,0 +1,5 @@
+{
+  "chatgpt.apiKey": "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",
+  "chatgpt.model": "gpt-3.5-turbo",
+  "chatgpt.extensionsToKeep": ".py,.ts,.md, .dart"
+}

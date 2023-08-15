@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:match/match.dart';
+import 'package:meus_gastos/models/category.dart';
 
 part 'categories_list_state.g.dart';
 
@@ -13,18 +14,20 @@ enum CategoriesListStatus {
 
 class CategoriesListState extends Equatable {
   final CategoriesListStatus status;
+  final List<Category> categories;
 
   const CategoriesListState({
     required this.status,
+    required this.categories,
   });
 
-  const CategoriesListState.initial() : status = CategoriesListStatus.initial;
+  const CategoriesListState.initial(this.categories) : status = CategoriesListStatus.initial;
 
   CategoriesListState copyWith({
     CategoriesListStatus? status,
   }) {
     return CategoriesListState(
-      status: status ?? this.status,
+      status: status ?? this.status, categories: categories,
     );
   }
 
