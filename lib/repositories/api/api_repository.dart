@@ -1,5 +1,5 @@
 import 'package:meus_gastos/models/category.dart';
 
-abstract class ApiRepository{
-  Future<Category> getData(String uid);
+abstract class ApiRepository {
+  Future<List<Category>> getData(String uid);
 }

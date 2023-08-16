@@ -7,7 +7,17 @@ class ImplAuthRepository implements AuthRepository {
   @override
   Stream<User?> get user => FirebaseAuth.instance.authStateChanges();
 
-@override
+  @override
+  Future<String> getUid() async {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      return currentUser.uid;
+    } else {
+      throw Exception("Usuário não autenticado.");
+    }
+  }
+
+  @override
   Future register(String email, String password) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -21,7 +31,7 @@ class ImplAuthRepository implements AuthRepository {
     }
   }
 
-@override
+  @override
   login({required String email, required String password}) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -35,23 +45,23 @@ class ImplAuthRepository implements AuthRepository {
     }
   }
 
-@override
+  @override
   logout() async {
     await FirebaseAuth.instance.signOut();
   }
 
-@override
+  @override
   resetPassword(String email) async {
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
-@override
+  @override
   Future<void> sendEmailVerification() async {
     await FirebaseAuth.instance.currentUser!.sendEmailVerification();
   }
 
-@override
-  Future<void> reload(){
+  @override
+  Future<void> reload() {
     return FirebaseAuth.instance.currentUser!.reload();
-  } 
+  }
 }

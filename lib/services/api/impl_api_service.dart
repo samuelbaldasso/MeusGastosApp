@@ -8,6 +8,6 @@ class ImplApiService implements ApiService {
   ImplApiService(this.apiRepository);
 
   @override
-  Future<Category> getData(String uid) async => await apiRepository.getData(uid);
-
+  Future<List<Category>> getData(String uid) async =>
+      await apiRepository.getData(uid);
 }

@@ -10,26 +10,30 @@ class CategoriesListController extends Cubit<CategoriesListState> {
   final AuthRepository authRepository;
   final ApiRepository apiRepository;
   final List<Category> categories;
-  CategoriesListController(this.authRepository, this.apiRepository, this.categories)
-      : super(CategoriesListState.initial(categories));
-      
+
+  CategoriesListController(
+      this.authRepository, this.apiRepository, this.categories)
+      : super(const CategoriesListState.initial());
+
   Future<void> logout() async {
     try {
       authRepository.logout();
     } catch (e, s) {
       log("Erro ao realizar login.", error: e, stackTrace: s);
-      emit(state.copyWith(status: CategoriesListStatus.error));
+      super.emit(state.copyWith(status: CategoriesListStatus.error));
     }
   }
 
-  Future<List<Category>> loadCategories(String uid) async {
+  Future<void> loadCategories() async {
     try {
       emit(state.copyWith(status: CategoriesListStatus.loading));
+      final uid = await authRepository.getUid();
       final result = await apiRepository.getData(uid);
-      emit(state.copyWith(status: CategoriesListStatus.loaded));
-      return result as List<Category>;
+
+      emit(state.copyWith(
+          status: CategoriesListStatus.loaded, categories: result));
     } catch (e, s) {
-      log("Erro ao realizar login.", error: e, stackTrace: s);
+      log("Erro ao carregar categorias.", error: e, stackTrace: s);
       emit(state.copyWith(status: CategoriesListStatus.error));
       throw Exception("$e, $s");
     }
