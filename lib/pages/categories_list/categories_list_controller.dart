@@ -29,11 +29,40 @@ class CategoriesListController extends Cubit<CategoriesListState> {
       emit(state.copyWith(status: CategoriesListStatus.loading));
       final uid = await authRepository.getUid();
       final result = await apiRepository.getData(uid);
-
       emit(state.copyWith(
           status: CategoriesListStatus.loaded, categories: result));
     } catch (e, s) {
       log("Erro ao carregar categorias.", error: e, stackTrace: s);
+      emit(state.copyWith(status: CategoriesListStatus.error));
+      throw Exception("$e, $s");
+    }
+  }
+
+  Future<void> addCategory(Category category) async {
+    try {
+      emit(state.copyWith(status: CategoriesListStatus.loading));
+      final uid = await authRepository.getUid();
+      await apiRepository.saveData(uid, category);
+      emit(state.copyWith(
+          status: CategoriesListStatus.loaded, categories: categories));
+    } catch (e, s) {
+      log("Erro ao adicionar categoria.", error: e, stackTrace: s);
+      emit(state.copyWith(status: CategoriesListStatus.error));
+      throw Exception("$e, $s");
+    }
+  }
+
+  Future<void> deleteCategory(Category category) async {
+    try {
+      emit(state.copyWith(status: CategoriesListStatus.loading));
+      final uid = await authRepository.getUid();
+      await apiRepository.deleteData(uid, category.id!);
+      final updatedCategories =
+          state.categories.where((c) => c.id != category.id).toList();
+      emit(state.copyWith(
+          status: CategoriesListStatus.loaded, categories: updatedCategories));
+    } catch (e, s) {
+      log("Erro ao remover categoria.", error: e, stackTrace: s);
       emit(state.copyWith(status: CategoriesListStatus.error));
       throw Exception("$e, $s");
     }

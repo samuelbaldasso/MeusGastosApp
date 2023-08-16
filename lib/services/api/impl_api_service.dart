@@ -10,4 +10,14 @@ class ImplApiService implements ApiService {
   @override
   Future<List<Category>> getData(String uid) async =>
       await apiRepository.getData(uid);
+
+  @override
+  Future<void> deleteData(String uid, int id) async {
+    return await apiRepository.deleteData(uid, id);
+  }
+
+  @override
+  Future<void> saveData(String uid, Category categories) async {
+    return await apiRepository.saveData(uid, categories);
+  }
 }
