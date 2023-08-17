@@ -25,8 +25,8 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
-      name: json['Name'],
-      description: json['Description'],
+      name: json['Name'] ?? '',
+      description: json['Description'] ?? '',
       entryType: json['EntryType'] ?? "",
       id: json['Id'] ?? 0,
       isInativo: json['IsInativo'] ?? false,
@@ -40,13 +40,19 @@ class Category {
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
-      name: map['Name'],
-      description: map['Description'],
-      entryType: map['EntryType'] ?? "",
+      name: map['Name'] ?? '',
+      description: map['Description'] ?? '',
+      entryType: map['EntryType'] is String
+          ? map['EntryType']
+          : map['EntryType'].toString(),
       id: map['Id'] ?? 0,
       isInativo: map['IsInativo'] ?? false,
-      dataCriacao: DateTime.tryParse(map['DataCriacao']) ?? DateTime.now(),
-      dataAlteracao: DateTime.tryParse(map['DataAlteracao']) ?? DateTime.now(),
+      dataCriacao: map['DataCriacao'] is String
+          ? DateTime.tryParse(map['DataCriacao']) ?? DateTime.now()
+          : DateTime.now(),
+      dataAlteracao: map['DataAlteracao'] is String
+          ? DateTime.tryParse(map['DataAlteracao']) ?? DateTime.now()
+          : DateTime.now(),
       uid: map['Uid'] ?? '',
       uidFirebase: map['UidFirebase'] ?? '',
       isChanged: map['IsChanged'] ?? false,
@@ -60,10 +66,12 @@ class Category {
       'EntryType': entryType ?? "",
       'Id': id ?? 0,
       'IsInativo': isInativo ?? false,
-      'DataCriacao': dataCriacao?.toIso8601String() ?? DateTime.now().toIso8601String(),
-      'DataAlteracao': dataAlteracao?.toIso8601String() ?? DateTime.now().toIso8601String(),
+      'DataCriacao':
+          dataCriacao?.toIso8601String() ?? DateTime.now().toIso8601String(),
+      'DataAlteracao':
+          dataAlteracao?.toIso8601String() ?? DateTime.now().toIso8601String(),
       'Uid': uid ?? '',
-      'UidFirebase': uidFirebase,
+      'UidFirebase': uidFirebase ?? '',
       'IsChanged': isChanged ?? false,
     };
   }

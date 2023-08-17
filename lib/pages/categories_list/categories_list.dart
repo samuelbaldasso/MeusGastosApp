@@ -162,17 +162,23 @@ class _CategoriesListState
                                           onPressed: () async {
                                             if (key.currentState?.validate() ??
                                                 false) {
-                                                  await controller.addCategory(Category(name: category.text, description: description.text));
-                                                  scaffold.showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        "Categoria adicionada com sucesso!"),
-                                                    duration: Duration(
-                                                      seconds: 2,
-                                                    ),
-                                                  ));
-                                                  nav.pop();
-                                                  controller.loadCategories();
-                                                }
+                                              await controller.addCategory(
+                                                  Category(
+                                                      name: category.text,
+                                                      description:
+                                                          description.text));
+
+                                              scaffold
+                                                  .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "Categoria adicionada com sucesso!"),
+                                                duration: Duration(
+                                                  seconds: 2,
+                                                ),
+                                              ));
+                                              nav.pop();
+                                              controller.loadCategories();
+                                            }
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
@@ -458,8 +464,49 @@ class _CategoriesListState
                                                         if (key.currentState
                                                                 ?.validate() ??
                                                             false) {
-                                                              
-                                                            }
+                                                          await controller
+                                                              .updateCategory(
+                                                                  Category(
+                                                            name: category.text,
+                                                            description:
+                                                                description.text,
+                                                            id: state
+                                                                .categories[
+                                                                    index]
+                                                                .id,
+                                                            dataAlteracao: state
+                                                                .categories[
+                                                                    index]
+                                                                .dataAlteracao,
+                                                            dataCriacao: state
+                                                                .categories[
+                                                                    index]
+                                                                .dataCriacao,
+                                                            entryType: state
+                                                                .categories[
+                                                                    index]
+                                                                .entryType,
+                                                            isChanged: state
+                                                                .categories[
+                                                                    index]
+                                                                .isChanged,
+                                                            isInativo: state
+                                                                .categories[
+                                                                    index]
+                                                                .isInativo,
+                                                            uid: state
+                                                                .categories[
+                                                                    index]
+                                                                .uid,
+                                                            uidFirebase: state
+                                                                .categories[
+                                                                    index]
+                                                                .uidFirebase,
+                                                          ));
+                                                          nav.pop();
+                                                          category.clear();
+                                                          description.clear();
+                                                        }
                                                       },
                                                       style: ElevatedButton
                                                           .styleFrom(

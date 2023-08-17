@@ -8,7 +8,7 @@ class ImplApiRepository implements ApiRepository {
     try {
       final result = await Dio().get(
           "http://meusgastos.codandocommoa.com.br/Api/Categorys/GetListaCategory?uIdFirebase=$uid");
-      print(result.data);
+
       final categoriesList = (result.data as List<dynamic>).map((categoryData) {
         categoryData['EntryType'] = categoryData['EntryType'].toString();
         return Category.fromMap(categoryData);
@@ -34,45 +34,57 @@ class ImplApiRepository implements ApiRepository {
   @override
   Future<void> saveData(String uid, Category category) async {
     try {
-      final result = await Dio().post(
+      await Dio().post(
           "http://meusgastos.codandocommoa.com.br/Api/Categorys/PostCategory",
           data: Category(
-                  name: category.name,
-                  description: category.description,
-                  entryType: category.entryType,
-                  isInativo: category.isInativo,
-                  dataAlteracao: category.dataAlteracao,
-                  dataCriacao: category.dataCriacao,
-                  id: category.id,
-                  uid: category.uid,
-                  uidFirebase: uid,
-                  ).toJson());
-      print(result.data);
+            name: category.name,
+            description: category.description,
+            entryType: category.entryType,
+            isInativo: category.isInativo,
+            dataAlteracao: category.dataAlteracao,
+            dataCriacao: category.dataCriacao,
+            id: category.id,
+            uid: category.uid,
+            uidFirebase: uid,
+          ).toJson());
+      // print(result.data);
     } on DioException catch (e) {
       throw Exception(e.message);
     }
   }
 
-//   @override
-//   Future<void> updateData(String uid, Category category) async {
-//     try {
-//       final result = await Dio().post(
-//           "http://meusgastos.codandocommoa.com.br/Api/Categorys/PostCategory",
-//           data: Category(
-//                   name: category.name,
-//                   description: category.description,
-//                   entryType: category.entryType,
-//                   isInativo: category.isInativo,
-//                   dataAlteracao: category.dataAlteracao,
-//                   dataCriacao: category.dataCriacao,
-//                   id: category.id,
-//                   uid: category.uid,
-//                   uidFirebase: uid,
-//                   ).toJson());
-//       print(result.data);
-//     } on DioException catch (e) {
-//       throw Exception(e.message);
-//     }
-  
-// }}
+  @override
+  Future<void> updateData(String uid, int id) async {
+    try {
+      final category = await getDataById(uid, id);
+      await saveData(
+          uid,
+          Category(
+              name: category.name,
+              description: category.description,
+              entryType: category.entryType,
+              isInativo: category.isInativo,
+              dataAlteracao: category.dataAlteracao,
+              dataCriacao: category.dataCriacao,
+              id: id,
+              uid: category.uid,
+              uidFirebase: uid,
+              isChanged: category.isChanged));
+    } on DioException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
+  @override
+  Future<Category> getDataById(String uid, int id) async {
+    try {
+      final result = await Dio().get(
+          "http://meusgastos.codandocommoa.com.br/Api/Categorys/GetCategoryById?uIdFirebase=$uid&id=$id");
+      print(result.data);
+      final category = Category.fromMap(result.data);
+      return category;
+    } on DioException catch (e) {
+      throw Exception(e.message);
+    }
+  }
 }
