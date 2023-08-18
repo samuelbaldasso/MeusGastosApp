@@ -15,13 +15,18 @@ class CategoriesList extends StatefulWidget {
 class _CategoriesListState
     extends BaseState<CategoriesList, CategoriesListController> {
   final GlobalKey<FormState> key = GlobalKey();
-  final category = TextEditingController();
-  final description = TextEditingController();
+  final GlobalKey<FormState> keyEdit = GlobalKey();
+  final categoryAddController = TextEditingController();
+  final descriptionAddController = TextEditingController();
+  final categoryEditController = TextEditingController();
+  final descriptionEditController = TextEditingController();
 
   @override
   void dispose() {
-    category.dispose();
-    description.dispose();
+    categoryAddController.dispose();
+    descriptionAddController.dispose();
+    categoryEditController.dispose();
+    descriptionEditController.dispose();
     super.dispose();
   }
 
@@ -91,7 +96,7 @@ class _CategoriesListState
                                           padding:
                                               const EdgeInsets.only(left: 8.0),
                                           child: TextFormField(
-                                              controller: category,
+                                              controller: categoryAddController,
                                               decoration: InputDecoration(
                                                 hintText: "ex: Casa",
                                                 labelText: "Nome da categoria",
@@ -125,7 +130,8 @@ class _CategoriesListState
                                               padding: const EdgeInsets.only(
                                                   left: 8.0),
                                               child: TextFormField(
-                                                  controller: description,
+                                                  controller:
+                                                      descriptionAddController,
                                                   decoration: InputDecoration(
                                                     hintText:
                                                         "ex: Gastos relacionados a moradia...",
@@ -164,9 +170,12 @@ class _CategoriesListState
                                                 false) {
                                               await controller.addCategory(
                                                   Category(
-                                                      name: category.text,
+                                                      name:
+                                                          categoryAddController
+                                                              .text,
                                                       description:
-                                                          description.text));
+                                                          descriptionAddController
+                                                              .text));
 
                                               scaffold
                                                   .showSnackBar(const SnackBar(
@@ -319,8 +328,6 @@ class _CategoriesListState
                                           "Categoria excluída com sucesso"),
                                     ),
                                   );
-                                  category.clear();
-                                  description.clear();
                                 } else if (direction ==
                                     DismissDirection.startToEnd) {
                                   showModalBottomSheet(
@@ -363,7 +370,8 @@ class _CategoriesListState
                                                           const EdgeInsets.only(
                                                               left: 8.0),
                                                       child: TextFormField(
-                                                          controller: category,
+                                                          controller:
+                                                              categoryEditController,
                                                           decoration:
                                                               InputDecoration(
                                                             hintText:
@@ -412,7 +420,7 @@ class _CategoriesListState
                                                                   left: 8.0),
                                                           child: TextFormField(
                                                               controller:
-                                                                  description,
+                                                                  descriptionEditController,
                                                               decoration:
                                                                   InputDecoration(
                                                                 hintText:
@@ -467,9 +475,12 @@ class _CategoriesListState
                                                           await controller
                                                               .updateCategory(
                                                                   Category(
-                                                            name: category.text,
+                                                            name:
+                                                                categoryEditController
+                                                                    .text,
                                                             description:
-                                                                description.text,
+                                                                descriptionEditController
+                                                                    .text,
                                                             id: state
                                                                 .categories[
                                                                     index]
@@ -504,8 +515,6 @@ class _CategoriesListState
                                                                 .uidFirebase,
                                                           ));
                                                           nav.pop();
-                                                          category.clear();
-                                                          description.clear();
                                                         }
                                                       },
                                                       style: ElevatedButton
@@ -543,7 +552,11 @@ class _CategoriesListState
                                                             left: 10.0,
                                                             right: 10.0),
                                                     child: ElevatedButton(
-                                                      onPressed: () {
+                                                      onPressed: () async {
+                                                        await controller
+                                                            .loadCategories();
+                                                        categoryEditController.clear();
+                                                        descriptionEditController.clear();
                                                         nav.pop();
                                                       },
                                                       style: ElevatedButton
@@ -576,14 +589,19 @@ class _CategoriesListState
                                             ),
                                           ]),
                                         );
-                                      });
-                                }
-                              },
-                              background: Container(
+                                      });}},
+                              secondaryBackground: Container(
                                 color: Colors.red,
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.only(right: 20.0),
                                 child: const Icon(Icons.delete,
+                                    color: Colors.white),
+                              ),
+                              background: Container(
+                                color: Colors.green,
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: const Icon(Icons.edit,
                                     color: Colors.white),
                               ),
                               child: ListTile(

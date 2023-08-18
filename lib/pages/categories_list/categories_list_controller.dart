@@ -72,8 +72,8 @@ class CategoriesListController extends Cubit<CategoriesListState> {
     try {
       emit(state.copyWith(status: CategoriesListStatus.loading));
       final uid = await authRepository.getUid();
-      await apiRepository.updateData(uid, category.id!);
-      final updatedCategories = state.categories.map((c) => c.id == category.id ? category : c).toList();
+      await apiRepository.updateData(uid, category);
+      final updatedCategories = await apiRepository.getData(uid);
       emit(state.copyWith(
           status: CategoriesListStatus.loaded, categories: updatedCategories));
     } catch (e, s) {

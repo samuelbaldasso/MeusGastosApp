@@ -5,5 +5,5 @@ abstract class ApiRepository {
   Future<Category> getDataById(String uid, int id);
   Future<void> saveData(String uid, Category category);
   Future<void> deleteData(String uid, int id);
-  Future<void> updateData(String uid, int id);
+  Future<void> updateData(String uid, Category category);
 }

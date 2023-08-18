@@ -25,7 +25,7 @@ class ImplApiRepository implements ApiRepository {
   Future<void> deleteData(String uid, int id) async {
     try {
       await Dio().post(
-          "http://meusgastos.codandocommoa.com.br/Api/Categorys/InativarCategory?uIdFirebase=$uid&id=$id");
+          "http://meusgastos.codandocommoa.com.br/Api/Categorys/InativarCategory?uIdFirebase=$uid&Id=$id");
     } on DioException catch (e) {
       throw Exception(e.message);
     }
@@ -54,9 +54,8 @@ class ImplApiRepository implements ApiRepository {
   }
 
   @override
-  Future<void> updateData(String uid, int id) async {
+  Future<void> updateData(String uid, Category category) async {
     try {
-      final category = await getDataById(uid, id);
       await saveData(
           uid,
           Category(
@@ -66,7 +65,7 @@ class ImplApiRepository implements ApiRepository {
               isInativo: category.isInativo,
               dataAlteracao: category.dataAlteracao,
               dataCriacao: category.dataCriacao,
-              id: id,
+              id: category.id,
               uid: category.uid,
               uidFirebase: uid,
               isChanged: category.isChanged));
@@ -79,8 +78,8 @@ class ImplApiRepository implements ApiRepository {
   Future<Category> getDataById(String uid, int id) async {
     try {
       final result = await Dio().get(
-          "http://meusgastos.codandocommoa.com.br/Api/Categorys/GetCategoryById?uIdFirebase=$uid&id=$id");
-      print(result.data);
+          "http://meusgastos.codandocommoa.com.br/Api/Categorys/GetCategoryById?uIdFirebase=$uid&Id=$id");
+
       final category = Category.fromMap(result.data);
       return category;
     } on DioException catch (e) {
