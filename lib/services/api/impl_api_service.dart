@@ -27,7 +27,7 @@ class ImplApiService implements ApiService {
   }
   
   @override
-  Future<void> updateData(String uid, int id) async {
-    return await apiRepository.updateData(uid, id);
+  Future<void> updateData(String uid, Category category) async {
+    return await apiRepository.updateData(uid, category);
   }
 }
