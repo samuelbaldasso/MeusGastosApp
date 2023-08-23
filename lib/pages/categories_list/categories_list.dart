@@ -245,29 +245,29 @@ class _CategoriesListState
                   )),
             ],
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            //Create a logic for selectedIndex
-            onTap: (index) {
-              setState(() {
-                selectedIndex[index] = !selectedIndex[index];
-              });
-            },
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.money_outlined,
-                ),
-                label: 'Lançamentos',
-              ),
-              BottomNavigationBarItem(
+          // bottomNavigationBar: BottomNavigationBar(
+          //   //Create a logic for selectedIndex
+          //   onTap: (index) {
+          //     setState(() {
+          //       selectedIndex[index] = !selectedIndex[index];
+          //     });
+          //   },
+          //   items: const [
+          //     BottomNavigationBarItem(
+          //       icon: Icon(
+          //         Icons.money_outlined,
+          //       ),
+          //       label: 'Lançamentos',
+          //     ),
+          //     BottomNavigationBarItem(
                 
-                  icon: Icon(
-                    Icons.check_box_outlined,
-                  ),
-                  label: 'Categorias',
-                  ),
-            ],
-          ),
+          //         icon: Icon(
+          //           Icons.check_box_outlined,
+          //         ),
+          //         label: 'Categorias',
+          //         ),
+          //   ],
+          // ),
 
           body: Padding(
               padding:
