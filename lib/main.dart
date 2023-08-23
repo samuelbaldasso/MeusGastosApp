@@ -5,6 +5,7 @@ import 'package:meus_gastos/firebase_options.dart';
 import 'package:meus_gastos/pages/auth/login/login_router.dart';
 import 'package:meus_gastos/pages/auth/register/register_router.dart';
 import 'package:meus_gastos/pages/categories_list/categories_list_router.dart';
+import 'package:meus_gastos/pages/expenses/expenses_list_router.dart';
 import 'package:meus_gastos/pages/home/home.dart';
 
 Future<void> main() async {
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
             "/register": (context) => RegisterRouter.page,
             "/home": (context) => const HomePage(),
             "/categories":(context) => CategoriesListRouter.page,
+            "/expenses":(context) => ExpensesListRouter.page,
           }
         ),
     );

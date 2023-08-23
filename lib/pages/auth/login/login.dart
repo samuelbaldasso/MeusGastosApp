@@ -36,7 +36,7 @@ class _LoginScreenState extends BaseState<LoginScreen, LoginController> {
             scaffold.showSnackBar(const SnackBar(
               content: Text('Usuário logado com sucesso.'),
             ));
-            Navigator.of(context).pushNamed('/categories');
+            Navigator.of(context).pushNamed('/expenses');
           },
           error: () {
             scaffold.showSnackBar(

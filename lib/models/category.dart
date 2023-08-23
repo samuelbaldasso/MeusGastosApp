@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Category {
   final String name;
   final String description;
@@ -23,20 +25,7 @@ class Category {
     this.isChanged,
   });
 
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      name: json['Name'] ?? '',
-      description: json['Description'] ?? '',
-      entryType: json['EntryType'] ?? "",
-      id: json['Id'] ?? 0,
-      isInativo: json['IsInativo'] ?? false,
-      dataCriacao: DateTime.tryParse(json['DataCriacao']) ?? DateTime.now(),
-      dataAlteracao: DateTime.tryParse(json['DataAlteracao']) ?? DateTime.now(),
-      uid: json['Uid'] ?? '',
-      uidFirebase: json['UidFirebase'] ?? '',
-      isChanged: json['IsChanged'] ?? false,
-    );
-  }
+  factory Category.fromJson(String json) => Category.fromMap(jsonDecode(json) as Map<String, dynamic>);
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
@@ -59,7 +48,7 @@ class Category {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'Name': name,
       'Description': description,
@@ -75,4 +64,7 @@ class Category {
       'IsChanged': isChanged ?? false,
     };
   }
+
+  String toJson() => jsonEncode(toMap());
+  
 }
