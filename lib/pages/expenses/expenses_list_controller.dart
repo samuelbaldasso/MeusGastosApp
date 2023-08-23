@@ -52,7 +52,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
     }
   }
 
-  Future<void> deleteCategory(Entry entry) async {
+  Future<void> deleteEntry(Entry entry) async {
     try {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
@@ -81,5 +81,5 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       emit(state.copyWith(status: ExpensesListStatus.error));
       throw Exception("$e, $s");
     }
-  }
+}
 }

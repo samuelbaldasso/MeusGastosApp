@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:meus_gastos/models/category.dart';
 import 'package:meus_gastos/models/entry.dart';
@@ -127,9 +129,10 @@ class ImplApiRepository implements ApiRepository {
   @override
   Future<void> saveEntry(String uid, Entry entry) async {
      try {
-      await Dio().post(
+      final result = await Dio().post(
           "http://meusgastos.codandocommoa.com.br/Api/Entrys/PostEntry",
           data: Entry(category: entry.category, entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.categoryId, entryType: entry.entryType, name: entry.name, value: entry.value).toMap());
+      log(result.data.toString());
     } on DioException catch (e) {
       throw Exception(e.message);
     }

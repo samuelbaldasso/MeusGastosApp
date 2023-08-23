@@ -5,10 +5,10 @@ import 'package:meus_gastos/models/category.dart';
 
 class Entry {
   final String name;
-  final String entryType;
+  final String? entryType;
   final double value;
-  final int categoryId;
-  final Category category;
+  final int? categoryId;
+  final Category? category;
   final DateTime? entryDate;
   final int? id;
   final bool? isInativo;
@@ -20,10 +20,10 @@ class Entry {
 
   Entry({
     required this.name,
-    required this.entryType,
+    this.entryType,
     required this.value,
-    required this.categoryId,
-    required this.category,
+    this.categoryId,
+    this.category,
     this.entryDate,
     this.id,
     this.isInativo,
@@ -37,40 +37,55 @@ class Entry {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'Name': name,
-      'EntryType': entryType,
+      'EntryType': entryType ?? "",
       'Value': value,
-      'CategoryId': categoryId,
-      'Category': category.toMap(),
-      'EntryDate': entryDate ?? DateTime.now(),
+      'CategoryId': categoryId ?? 0,
+      'Category': category?.toMap() ??
+          Category(
+                  name: category?.name ?? "",
+                  description: category?.description ?? "")
+              .toMap(),
+      'EntryDate':
+          entryDate?.toIso8601String() ?? DateTime.now().toIso8601String(),
       'Id': id ?? 0,
       'IsInativo': isInativo ?? false,
-      'DataCriacao': dateCreated ?? DateTime.now(),
-      'DataAlteracao': dateUpdated ?? DateTime.now(),
-      'Uid': uid ?? '',
-      'UidFirebase': uidFirebase ?? '',
+      'DataCriacao':
+          dateCreated?.toIso8601String() ?? DateTime.now().toIso8601String(),
+      'DataAlteracao':
+          dateUpdated?.toIso8601String() ?? DateTime.now().toIso8601String(),
+      'Uid': uid ?? "",
+      'UidFirebase': uidFirebase ?? "",
       'IsChanged': isChanged ?? false,
     };
   }
 
   factory Entry.fromMap(Map<String, dynamic> map) {
     return Entry(
-      name: map['Name'] as String,
-      entryType: map['EntryType'] as String,
-      value: map['Value'] as double,
-      categoryId: map['CategoryId'] as int,
-      category: Category.fromMap(map['Category'] as Map<String,dynamic>),
-      entryDate: map['EntryDate'] != null ? DateTime.fromMillisecondsSinceEpoch(map['EntryDate'] as int) : null,
-      id: map['Id'] != null ? map['Id'] as int : null,
-      isInativo: map['IsInativo'] != null ? map['IsInativo'] as bool : null,
-      dateCreated: map['dataCriacao'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dataCriacao'] as int) : null,
-      dateUpdated: map['dataAlteracao'] != null ? DateTime.fromMillisecondsSinceEpoch(map['dataAlteracao'] as int) : null,
-      uid: map['Uid'] != null ? map['Uid'] as String : null,
-      uidFirebase: map['UidFirebase'] != null ? map['UidFirebase'] as String : null,
-      isChanged: map['IsChanged'] != null ? map['IsChanged'] as bool : null,
+      category:
+          map["category"] ??  Category(
+                  name: map["category"]?.name ?? "",
+                  description: map["category"]?.description ?? ""),
+      name: map['Name'] ?? '',
+      entryType: map['EntryType'] is String
+          ? map['EntryType']
+          : map['EntryType'].toString(),
+      value: map['Value'] ?? 0,
+      id: map['Id'] ?? 0,
+      isInativo: map['IsInativo'] ?? false,
+      dateCreated: map['DataCriacao'] is String
+          ? DateTime.tryParse(map['DataCriacao']) ?? DateTime.now()
+          : DateTime.now(),
+      dateUpdated: map['DataAlteracao'] is String
+          ? DateTime.tryParse(map['DataAlteracao']) ?? DateTime.now()
+          : DateTime.now(),
+      uid: map['Uid'] ?? '',
+      uidFirebase: map['UidFirebase'] ?? '',
+      isChanged: map['IsChanged'] ?? false,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Entry.fromJson(String source) => Entry.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Entry.fromJson(String source) =>
+      Entry.fromMap(json.decode(source) as Map<String, dynamic>);
 }
