@@ -82,4 +82,24 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       throw Exception("$e, $s");
     }
 }
+
+  double getTotalOut(List<Entry> expenses) {
+    double total = 0;
+    for (var expense in state.expenses) {
+      if(expense.entryType == "1"){
+        total += expense.value;
+      }
+    }
+    return total;
+  } 
+
+    double getTotalIn(List<Entry> expenses) {
+    double total = 0;
+    for (var expense in state.expenses) {
+      if(expense.entryType == "0"){
+        total += expense.value;
+      }
+    }
+    return total;
+  } 
 }

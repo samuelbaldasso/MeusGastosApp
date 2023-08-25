@@ -245,30 +245,6 @@ class _CategoriesListState
                   )),
             ],
           ),
-          // bottomNavigationBar: BottomNavigationBar(
-          //   //Create a logic for selectedIndex
-          //   onTap: (index) {
-          //     setState(() {
-          //       selectedIndex[index] = !selectedIndex[index];
-          //     });
-          //   },
-          //   items: const [
-          //     BottomNavigationBarItem(
-          //       icon: Icon(
-          //         Icons.money_outlined,
-          //       ),
-          //       label: 'Lançamentos',
-          //     ),
-          //     BottomNavigationBarItem(
-                
-          //         icon: Icon(
-          //           Icons.check_box_outlined,
-          //         ),
-          //         label: 'Categorias',
-          //         ),
-          //   ],
-          // ),
-
           body: Padding(
               padding:
                   const EdgeInsets.only(top: 16.0, left: 8.0, bottom: 36.0),
