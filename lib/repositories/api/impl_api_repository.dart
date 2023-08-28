@@ -90,6 +90,8 @@ class ImplApiRepository implements ApiRepository {
     }
   }
 
+  //================================================================================================================
+
   @override
   Future<void> deleteEntry(String uid, int id) async {
    try {
@@ -105,9 +107,12 @@ class ImplApiRepository implements ApiRepository {
     try {
   final result = await Dio().get("http://meusgastos.codandocommoa.com.br/Api/Entrys/GetListaEntry?uIdFirebase=$uid");
   final entriesList = (result.data as List<dynamic>).map((entryData) {
+    entryData['EntryType'] = entryData['EntryType'].toString();
     return Entry.fromMap(entryData);
   }).toList();
-  return entriesList;
+  return entriesList
+          .where((element) => element.isInativo == false)
+          .toList();
 } on DioException catch (e) {
   throw Exception(e.message);
 }
@@ -131,7 +136,7 @@ class ImplApiRepository implements ApiRepository {
      try {
       final result = await Dio().post(
           "http://meusgastos.codandocommoa.com.br/Api/Entrys/PostEntry",
-          data: Entry(category: entry.category, entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.categoryId, entryType: entry.entryType, name: entry.name, value: entry.value).toMap());
+          data: Entry(category: Category(name: entry.category?.name ?? "", description: entry.category?.description ?? "", dataAlteracao: entry.category?.dataAlteracao ?? DateTime.now(), dataCriacao: entry.category?.dataCriacao ?? DateTime.now(), entryType: entry.category?.entryType, id: entry.category?.id, isChanged: entry.category?.isChanged, isInativo: entry.category?.isInativo, uid: entry.category?.uid, uidFirebase: uid), entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.category?.id, entryType: entry.entryType, name: entry.name, value: entry.value).toMap());
       log(result.data.toString());
     } on DioException catch (e) {
       throw Exception(e.message);
@@ -143,8 +148,7 @@ class ImplApiRepository implements ApiRepository {
     try {
       await saveEntry(
           uid,
-          Entry(category: entry.category, entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.categoryId, entryType: entry.entryType, name: entry.name, value: entry.value)
-          );
+          Entry(category: Category(name: entry.category?.name ?? "", description: entry.category?.description ?? "", dataAlteracao: entry.category?.dataAlteracao ?? DateTime.now(), dataCriacao: entry.category?.dataCriacao ?? DateTime.now(), entryType: entry.category?.entryType, id: entry.category?.id, isChanged: entry.category?.isChanged, isInativo: entry.category?.isInativo, uid: entry.category?.uid, uidFirebase: uid), entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.category?.id, entryType: entry.entryType, name: entry.name, value: entry.value));
     } on DioException catch (e) {
       throw Exception(e.message);
     }

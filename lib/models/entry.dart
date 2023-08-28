@@ -61,10 +61,10 @@ class Entry {
 
   factory Entry.fromMap(Map<String, dynamic> map) {
     return Entry(
-      category:
-          map["category"] ??  Category(
-                  name: map["category"]?.name ?? "",
-                  description: map["category"]?.description ?? ""),
+      category: map["category"] ??
+          Category(
+              name: map["category"]?.name ?? "",
+              description: map["category"]?.description ?? ""),
       name: map['Name'] ?? '',
       entryType: map['EntryType'] is String
           ? map['EntryType']
