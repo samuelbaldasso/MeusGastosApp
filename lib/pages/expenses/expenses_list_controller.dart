@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meus_gastos/models/category.dart';
 import 'package:meus_gastos/models/entry.dart';
 import 'package:meus_gastos/pages/expenses/expenses_list_state.dart';
 import 'package:meus_gastos/repositories/api/api_repository.dart';
@@ -9,10 +10,11 @@ import 'package:meus_gastos/repositories/auth/auth_repository.dart';
 class ExpensesListController extends Cubit<ExpensesListState> {
   final AuthRepository authRepository;
   final ApiRepository apiRepository;
+  final List<Category> categories;
   final List<Entry> expenses;
 
   ExpensesListController(
-      this.authRepository, this.apiRepository, this.expenses)
+      this.authRepository, this.apiRepository, this.expenses, this.categories)
       : super(const ExpensesListState.initial());
 
   Future<void> logout() async {
@@ -29,8 +31,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
       final result = await apiRepository.getEntries(uid);
-      emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: result));
+      emit(state.copyWith(status: ExpensesListStatus.loaded, expenses: result, categories: categories));
     } catch (e, s) {
       log("Erro ao carregar gastos.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -44,7 +45,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final uid = await authRepository.getUid();
       await apiRepository.saveEntry(uid, entry);
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: expenses));
+          status: ExpensesListStatus.loaded, expenses: expenses, categories: categories));
     } catch (e, s) {
       log("Erro ao adicionar gasto.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -60,7 +61,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final updatedExpenses =
           state.expenses.where((c) => c.id != entry.id).toList();
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: updatedExpenses));
+          status: ExpensesListStatus.loaded, expenses: updatedExpenses, categories: categories));
     } catch (e, s) {
       log("Erro ao remover gasto.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -74,32 +75,33 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final uid = await authRepository.getUid();
       await apiRepository.updateEntry(uid, entry);
       final updatedExpenses = await apiRepository.getEntries(uid);
+      final updatedCategories = await apiRepository.getData(uid);
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: updatedExpenses));
+          status: ExpensesListStatus.loaded, expenses: updatedExpenses, categories: updatedCategories));
     } catch (e, s) {
       log("Erro ao atualizar categoria.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
       throw Exception("$e, $s");
     }
-}
+  }
 
   double getTotalOut(List<Entry> expenses) {
     double total = 0;
     for (var expense in state.expenses) {
-      if(expense.entryType == "1"){
+      if (expense.entryType == "1") {
         total += expense.value;
       }
     }
     return total;
-  } 
+  }
 
-    double getTotalIn(List<Entry> expenses) {
+  double getTotalIn(List<Entry> expenses) {
     double total = 0;
     for (var expense in state.expenses) {
-      if(expense.entryType == "0"){
+      if (expense.entryType == "0") {
         total += expense.value;
       }
     }
     return total;
-  } 
+  }
 }

@@ -40,7 +40,6 @@ class _CategoriesListState
   Widget build(BuildContext context) {
     final nav = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
-    var selectedIndex = [true, false];
     return BlocBuilder<CategoriesListController, CategoriesListState>(
       builder: (context, state) {
         return Scaffold(

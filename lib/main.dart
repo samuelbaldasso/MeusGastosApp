@@ -14,7 +14,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-   initializeDateFormatting('en_US', null).then((_) => runApp(const MyApp()));
+   initializeDateFormatting('pt_BR', null).then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
