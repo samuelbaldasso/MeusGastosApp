@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meus_gastos/models/entry.dart';
 import 'package:meus_gastos/pages/categories_list/categories_list_controller.dart';
 import 'package:meus_gastos/pages/expenses/expenses_list.dart';
 import 'package:meus_gastos/pages/expenses/expenses_list_controller.dart';
@@ -22,7 +23,7 @@ class ExpensesListRouter {
           Provider(
             create: (context) => CategoriesListController(
                 context.read<ImplAuthRepository>(),
-                context.read<ImplApiRepository>(), 
+                context.read<ImplApiRepository>(),
                 context.read<CategoriesListController>().state.categories),
           ),
           Provider(
@@ -30,8 +31,9 @@ class ExpensesListRouter {
                 context.read<ImplAuthRepository>(),
                 context.read<ImplApiRepository>(),
                 [],
-                context.read<CategoriesListController>().state.categories),
-          ),
+                context.read<CategoriesListController>().state.categories,
+                Entry(name: "", value: 0.0),
+          ),),
         ],
         child: const ExpensesList(),
       );

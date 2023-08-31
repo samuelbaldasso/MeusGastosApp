@@ -38,6 +38,21 @@ class CategoriesListController extends Cubit<CategoriesListState> {
     }
   }
 
+  // Future<Category> loadById(Category category) async {
+  //   try {
+  //     emit(state.copyWith(status: CategoriesListStatus.loading));
+  //     final uid = await authRepository.getUid();
+  //     final cat = await apiRepository.getDataById(uid, category.id ?? 0);
+  //     emit(state.copyWith(
+  //         status: CategoriesListStatus.loaded, categories: categories));
+  //     return cat;
+  //   } catch (e, s) {
+  //     log("Erro ao carregar categoria.", error: e, stackTrace: s);
+  //     emit(state.copyWith(status: CategoriesListStatus.error));
+  //     throw Exception("$e, $s");
+  //   }
+  // }
+
   Future<void> addCategory(Category category) async {
     try {
       emit(state.copyWith(status: CategoriesListStatus.loading));
