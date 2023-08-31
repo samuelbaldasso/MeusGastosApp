@@ -11,11 +11,12 @@ class ExpensesListController extends Cubit<ExpensesListState> {
   final AuthRepository authRepository;
   final ApiRepository apiRepository;
   final List<Category> categories;
-  final List<Entry> expenses;
+  final List<Entry>? expenses;
+  final Entry? expense;
 
-  ExpensesListController(
-      this.authRepository, this.apiRepository, this.expenses, this.categories)
-      : super(const ExpensesListState.initial());
+  ExpensesListController(this.authRepository, this.apiRepository, this.expenses,
+      this.categories, this.expense)
+      : super(ExpensesListState.initial());
 
   Future<void> logout() async {
     try {
@@ -31,7 +32,19 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
       final result = await apiRepository.getEntries(uid);
-      emit(state.copyWith(status: ExpensesListStatus.loaded, expenses: result, categories: categories));
+      if (result.isNotEmpty) {
+        emit(state.copyWith(
+            status: ExpensesListStatus.loaded,
+            expenses: result,
+            categories: categories,
+            expense: expense));
+      } else {
+        emit(state.copyWith(
+            status: ExpensesListStatus.empty,
+            expenses: [],
+            categories: categories,
+            expense: null));
+      }
     } catch (e, s) {
       log("Erro ao carregar gastos.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -45,7 +58,10 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final uid = await authRepository.getUid();
       await apiRepository.saveEntry(uid, entry);
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: expenses, categories: categories));
+          status: ExpensesListStatus.loaded,
+          expenses: expenses,
+          categories: categories,
+          expense: expense));
     } catch (e, s) {
       log("Erro ao adicionar gasto.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -61,12 +77,19 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final updatedExpenses =
           state.expenses.where((c) => c.id != entry.id).toList();
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: updatedExpenses, categories: categories));
+          status: ExpensesListStatus.loaded,
+          expenses: updatedExpenses,
+          categories: categories,
+          expense: expense));
     } catch (e, s) {
       log("Erro ao remover gasto.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
       throw Exception("$e, $s");
     }
+  }
+
+   Entry? getExpenseById(int expenseId) {
+    return state.expenses.firstWhere((expense) => expense.id == expenseId);
   }
 
   Future<void> updateEntry(Entry entry) async {
@@ -77,7 +100,10 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final updatedExpenses = await apiRepository.getEntries(uid);
       final updatedCategories = await apiRepository.getData(uid);
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, expenses: updatedExpenses, categories: updatedCategories));
+          status: ExpensesListStatus.loaded,
+          expenses: updatedExpenses,
+          categories: updatedCategories,
+          expense: expense));
     } catch (e, s) {
       log("Erro ao atualizar categoria.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -87,7 +113,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
 
   double getTotalOut(List<Entry> expenses) {
     double total = 0;
-    for (var expense in state.expenses) {
+    for (var expense in expenses) {
       if (expense.entryType == "1") {
         total += expense.value;
       }
@@ -97,7 +123,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
 
   double getTotalIn(List<Entry> expenses) {
     double total = 0;
-    for (var expense in state.expenses) {
+    for (var expense in expenses) {
       if (expense.entryType == "0") {
         total += expense.value;
       }

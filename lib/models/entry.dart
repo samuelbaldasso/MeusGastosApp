@@ -5,7 +5,7 @@ import 'package:meus_gastos/models/category.dart';
 
 class Entry {
   final String name;
-  final String? entryType;
+  String? entryType;
   final double value;
   final int? categoryId;
   final Category? category;
@@ -33,6 +33,7 @@ class Entry {
     this.uidFirebase,
     this.isChanged,
   });
+  
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -40,11 +41,7 @@ class Entry {
       'EntryType': entryType ?? "",
       'Value': value,
       'CategoryId': categoryId ?? 0,
-      'Category': category?.toMap() ??
-          Category(
-                  name: category?.name ?? "",
-                  description: category?.description ?? "")
-              .toMap(),
+      'Category': null,
       'EntryDate':
           entryDate?.toIso8601String() ?? DateTime.now().toIso8601String(),
       'Id': id ?? 0,
@@ -61,10 +58,7 @@ class Entry {
 
   factory Entry.fromMap(Map<String, dynamic> map) {
     return Entry(
-      category: map["category"] ??
-          Category(
-              name: map["category"]?.name ?? "",
-              description: map["category"]?.description ?? ""),
+      category: null,
       name: map['Name'] ?? '',
       entryType: map['EntryType'] is String
           ? map['EntryType']
