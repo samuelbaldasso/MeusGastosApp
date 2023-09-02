@@ -175,7 +175,8 @@ class _CategoriesListState
                                                               .text,
                                                       description:
                                                           descriptionAddController
-                                                              .text));
+                                                              .text,
+                                                              ));
 
                                               scaffold
                                                   .showSnackBar(const SnackBar(

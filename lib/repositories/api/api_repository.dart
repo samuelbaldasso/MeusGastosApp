@@ -9,7 +9,7 @@ abstract class ApiRepository {
   Future<void> updateData(String uid, Category category);
   Future<List<Entry>> getEntries(String uid);
   Future<Entry> getEntryById(String uid, int id);
-  Future<void> saveEntry(String uid, Entry entry);
+  Future<void> saveEntry(String uid, Entry entry, Category? selectedCategory);
   Future<void> deleteEntry(String uid, int id);
-  Future<void> updateEntry(String uid, Entry entry);
+  Future<void> updateEntry(String uid, Entry entry, Category? selectedCategory);
 }

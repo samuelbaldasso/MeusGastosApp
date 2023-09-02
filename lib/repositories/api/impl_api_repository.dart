@@ -94,7 +94,7 @@ class ImplApiRepository implements ApiRepository {
 
   @override
   Future<void> deleteEntry(String uid, int id) async {
-   try {
+    try {
       await Dio().post(
           "http://meusgastos.codandocommoa.com.br/Api/Entrys/InativarEntry?uIdFirebase=$uid&Id=$id");
     } on DioException catch (e) {
@@ -105,17 +105,18 @@ class ImplApiRepository implements ApiRepository {
   @override
   Future<List<Entry>> getEntries(String uid) async {
     try {
-  final result = await Dio().get("http://meusgastos.codandocommoa.com.br/Api/Entrys/GetListaEntry?uIdFirebase=$uid");
-  final entriesList = (result.data as List<dynamic>).map((entryData) {
-    entryData['EntryType'] = entryData['EntryType'].toString();
-    return Entry.fromMap(entryData);
-  }).toList();
-  return entriesList
+      final result = await Dio().get(
+          "http://meusgastos.codandocommoa.com.br/Api/Entrys/GetListaEntry?uIdFirebase=$uid");
+      final entriesList = (result.data as List<dynamic>).map((entryData) {
+        entryData['EntryType'] = entryData['EntryType'].toString();
+        return Entry.fromMap(entryData);
+      }).toList();
+      return entriesList
           .where((element) => element.isInativo == false)
           .toList();
-} on DioException catch (e) {
-  throw Exception(e.message);
-}
+    } on DioException catch (e) {
+      throw Exception(e.message);
+    }
   }
 
   @override
@@ -132,27 +133,68 @@ class ImplApiRepository implements ApiRepository {
   }
 
   @override
-  Future<void> saveEntry(String uid, Entry entry) async {
-     try {
-      final result = await Dio().post(
-          "http://meusgastos.codandocommoa.com.br/Api/Entrys/PostEntry",
-          data: Entry(category: null, entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.categoryId, entryType: entry.entryType, name: entry.name, value: entry.value).toMap());
-      log(result.data.toString());
+  Future<void> saveEntry(String uid, Entry entry, Category? selectedCategory) async {
+    // Check if the associated category exists
+    Category? category;
+    if (selectedCategory != null) {
+      // If a selected category is provided, use it
+      category = selectedCategory;
+    }
+    // If a categoryId is provided, fetch the category by ID
+
+    try {
+      // Save the entry with the associated category
+      final entryToSave = Entry(
+        category: category,
+        entryDate: entry.entryDate,
+        id: entry.id,
+        isInativo: entry.isInativo,
+        dateCreated: entry.dateCreated,
+        dateUpdated: entry.dateUpdated,
+        uid: entry.uid,
+        uidFirebase: uid,
+        isChanged: entry.isChanged,
+        categoryId: category?.id ?? 0, // Use the ID of the associated category
+        entryType: entry.entryType,
+        name: entry.name,
+        value: entry.value,
+      );
+      log('Entry to Save: ${entryToSave.toMap().toString()}'); // Debug statement
+
+      await Dio().post(
+        "http://meusgastos.codandocommoa.com.br/Api/Entrys/PostEntry",
+        data: entryToSave.toMap(),
+      );
+      // log(result.data.toString());
     } on DioException catch (e) {
       throw Exception(e.message);
     }
   }
 
   @override
-  Future<void> updateEntry(String uid, Entry entry) async{
+  Future<void> updateEntry(
+      String uid, Entry entry, Category? selectedCategory) async {
     try {
-      await saveEntry(
-          uid,
-          Entry(category: null, entryDate: entry.entryDate, id: entry.id, isInativo: entry.isInativo, dateCreated: entry.dateCreated, dateUpdated: entry.dateUpdated, uid: entry.uid, uidFirebase: uid, isChanged: entry.isChanged, categoryId: entry.categoryId, entryType: entry.entryType, name: entry.name, value: entry.value));
+      // Create a new Entry object with updated properties but keep the same Category
+      final updatedEntry = Entry(
+        category: entry.category, // Keep the same Category
+        entryDate: entry.entryDate,
+        id: entry.id,
+        isInativo: entry.isInativo,
+        dateCreated: entry.dateCreated,
+        dateUpdated: entry.dateUpdated,
+        uid: entry.uid,
+        uidFirebase: uid,
+        isChanged: entry.isChanged,
+        categoryId: entry.categoryId,
+        entryType: entry.entryType,
+        name: entry.name,
+        value: entry.value,
+      );
+
+      await saveEntry(uid, updatedEntry, selectedCategory);
     } on DioException catch (e) {
       throw Exception(e.message);
     }
   }
-
-  
 }
