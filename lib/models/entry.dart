@@ -7,7 +7,7 @@ class Entry {
   final String name;
   String? entryType;
   final double value;
-  final int? categoryId;
+  final int categoryId;
   final Category? category;
   final DateTime? entryDate;
   final int? id;
@@ -22,8 +22,8 @@ class Entry {
     required this.name,
     this.entryType,
     required this.value,
-    this.categoryId,
-    this.category,
+    required this.categoryId,
+    required this.category,
     this.entryDate,
     this.id,
     this.isInativo,
@@ -40,8 +40,8 @@ class Entry {
       'Name': name,
       'EntryType': entryType ?? "",
       'Value': value,
-      'CategoryId': categoryId ?? 0,
-      'Category': null,
+      'CategoryId': categoryId,
+      'Category': category?.toMap(),
       'EntryDate':
           entryDate?.toIso8601String() ?? DateTime.now().toIso8601String(),
       'Id': id ?? 0,
@@ -58,7 +58,8 @@ class Entry {
 
   factory Entry.fromMap(Map<String, dynamic> map) {
     return Entry(
-      category: null,
+      categoryId: map["CategoryId"] ?? 0,
+      category: map["Category"] ?? Category(name: map["Name"] ?? "", description: map["Description"] ?? ""),
       name: map['Name'] ?? '',
       entryType: map['EntryType'] is String
           ? map['EntryType']

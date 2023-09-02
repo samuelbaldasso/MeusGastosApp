@@ -32,7 +32,7 @@ class ExpensesListRouter {
                 context.read<ImplApiRepository>(),
                 [],
                 context.read<CategoriesListController>().state.categories,
-                Entry(name: "", value: 0.0),
+                null,
           ),),
         ],
         child: const ExpensesList(),
