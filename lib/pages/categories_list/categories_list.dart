@@ -63,6 +63,7 @@ class _CategoriesListState
                     showModalBottomSheet(
                         isScrollControlled: true,
                         isDismissible: true,
+                        enableDrag: false,
                         context: context,
                         builder: (context) {
                           return FractionallySizedBox(
@@ -168,15 +169,14 @@ class _CategoriesListState
                                           onPressed: () async {
                                             if (key.currentState?.validate() ??
                                                 false) {
-                                              await controller.addCategory(
-                                                  Category(
-                                                      name:
-                                                          categoryAddController
-                                                              .text,
-                                                      description:
-                                                          descriptionAddController
-                                                              .text,
-                                                              ));
+                                              await controller
+                                                  .addCategory(Category(
+                                                name:
+                                                    categoryAddController.text,
+                                                description:
+                                                    descriptionAddController
+                                                        .text,
+                                              ));
 
                                               scaffold
                                                   .showSnackBar(const SnackBar(
@@ -311,6 +311,7 @@ class _CategoriesListState
                                   showModalBottomSheet(
                                       isScrollControlled: true,
                                       isDismissible: true,
+                                      enableDrag: false,
                                       context: context,
                                       builder: (context) {
                                         return FractionallySizedBox(
@@ -533,8 +534,10 @@ class _CategoriesListState
                                                       onPressed: () async {
                                                         await controller
                                                             .loadCategories();
-                                                        categoryEditController.clear();
-                                                        descriptionEditController.clear();
+                                                        categoryEditController
+                                                            .clear();
+                                                        descriptionEditController
+                                                            .clear();
                                                         nav.pop();
                                                       },
                                                       style: ElevatedButton
@@ -567,7 +570,9 @@ class _CategoriesListState
                                             ),
                                           ]),
                                         );
-                                      });}},
+                                      });
+                                }
+                              },
                               secondaryBackground: Container(
                                 color: Colors.red,
                                 alignment: Alignment.centerRight,
@@ -579,8 +584,8 @@ class _CategoriesListState
                                 color: Colors.green,
                                 alignment: Alignment.centerLeft,
                                 padding: const EdgeInsets.only(left: 20.0),
-                                child: const Icon(Icons.edit,
-                                    color: Colors.white),
+                                child:
+                                    const Icon(Icons.edit, color: Colors.white),
                               ),
                               child: ListTile(
                                 title: Text(state.categories[index].name),
