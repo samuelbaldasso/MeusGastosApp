@@ -54,7 +54,6 @@ class _ExpensesListState
     final scaffold = ScaffoldMessenger.of(context);
     return BlocBuilder<ExpensesListController, ExpensesListState>(
         builder: (context, state) {
-          
       return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -75,7 +74,7 @@ class _ExpensesListState
                 onPressed: () {
                   showModalBottomSheet(
                       isScrollControlled: true,
-                      isDismissible: false,
+                      isDismissible: true,
                       context: context,
                       builder: (context) {
                         return _buildBottomSheetContent(context, state);
@@ -292,6 +291,7 @@ class _ExpensesListState
                                     itemBuilder: (context, index) {
                                       var item = state.expenses[index];
                                       var cat = state.categories;
+
                                       return Builder(builder: (context) {
                                         return Dismissible(
                                           key: Key(item.id.toString()),
@@ -314,7 +314,7 @@ class _ExpensesListState
                                                 DismissDirection.startToEnd) {
                                               showModalBottomSheet(
                                                   isScrollControlled: true,
-                                                  isDismissible: false,
+                                                  isDismissible: true,
                                                   context: context,
                                                   builder: (context) {
                                                     return FractionallySizedBox(
@@ -561,9 +561,9 @@ class _ExpensesListState
                                                                               setState) {
                                                                         return DropdownButton<
                                                                                 Category>(
-                                                                            items: state.categories.map(
-                                                                                (category) {
-                                                                              return DropdownMenuItem(
+                                                                            items: state.categories.map((Category
+                                                                                category) {
+                                                                              return DropdownMenuItem<Category>(
                                                                                 value: category,
                                                                                 child: Text(
                                                                                   category.name,
@@ -571,14 +571,14 @@ class _ExpensesListState
                                                                                 ),
                                                                               );
                                                                             }).toList(),
+                                                                            // value:
+                                                                            //     selectedCategory ?? defaultCategory,
                                                                             isExpanded:
                                                                                 true,
                                                                             // underline:
                                                                             //     const SizedBox(),
-                                                                            value:
-                                                                                selectedCategory,
-                                                                            onChanged:
-                                                                                (newValue) {
+                                                                            onChanged: (Category?
+                                                                                newValue) {
                                                                               setState(() {
                                                                                 selectedCategory = newValue;
                                                                               });
@@ -593,9 +593,9 @@ class _ExpensesListState
                                                                     ),
                                                                   ),
                                                                   Builder(
-                                                                      builder:
-                                                                          (context,
-                                                                              ) {
+                                                                      builder: (
+                                                                    context,
+                                                                  ) {
                                                                     return Padding(
                                                                       padding: const EdgeInsets
                                                                               .symmetric(
@@ -646,26 +646,26 @@ class _ExpensesListState
                                                                         if (keyEdit.currentState?.validate() ??
                                                                             false) {
                                                                           final entryUpdated = Entry(
-                                                                                  name: categoryEditController.text,
-                                                                                  value: double.parse(
-                                                                                    descriptionEditController.text,
-                                                                                  ),
-                                                                                  entryType: item.entryType,
-                                                                                  category: null,
-                                                                                  categoryId: selectedCategory?.id ?? 0,
-                                                                                  dateCreated: item.dateCreated,
-                                                                                  id: item.id,
-                                                                                  dateUpdated: item.dateUpdated,
-                                                                                  entryDate: selectedDate,
-                                                                                  isChanged: item.isChanged,
-                                                                                  isInativo: item.isInativo,
-                                                                                  uid: item.uid,
-                                                                                  uidFirebase: item.uidFirebase);
+                                                                              name: categoryEditController.text,
+                                                                              value: double.parse(
+                                                                                descriptionEditController.text,
+                                                                              ),
+                                                                              entryType: item.entryType,
+                                                                              category: null,
+                                                                              categoryId: selectedCategory?.id ?? 0,
+                                                                              dateCreated: item.dateCreated,
+                                                                              id: item.id,
+                                                                              dateUpdated: item.dateUpdated,
+                                                                              entryDate: selectedDate,
+                                                                              isChanged: item.isChanged,
+                                                                              isInativo: item.isInativo,
+                                                                              uid: item.uid,
+                                                                              uidFirebase: item.uidFirebase);
 
                                                                           await controller.updateEntry(
                                                                               entryUpdated,
                                                                               selectedCategory?.id ?? 0);
-                                                                              
+
                                                                           nav.pop();
                                                                         }
                                                                       },
@@ -715,7 +715,9 @@ class _ExpensesListState
                                                                             .clear();
                                                                         descriptionEditController
                                                                             .clear();
-                                                                        log(item.entryDate!.toString());
+                                                                        log(item
+                                                                            .entryDate!
+                                                                            .toString());
                                                                       },
                                                                       style: ElevatedButton
                                                                           .styleFrom(
@@ -836,8 +838,9 @@ class _ExpensesListState
                                                         ? "+ ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(item.value)}"
                                                         : "- ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(item.value)}"),
                                                     Text(DateFormat.yMd('pt-BR')
-                                                        .format(item.entryDate ?? DateTime.now())),
-
+                                                        .format(item
+                                                                .entryDate ??
+                                                            DateTime.now())),
                                                   ],
                                                 ),
                                               ],
@@ -869,327 +872,313 @@ class _ExpensesListState
       BuildContext context, ExpensesListState state) {
     final nav = Navigator.of(context);
     final scaffold = ScaffoldMessenger.of(context);
-    return LayoutBuilder(builder: (context, constraints) {
-      return ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: constraints.maxHeight * .9,
-            minWidth: constraints.maxWidth,
-          ),
-          child: Padding(
+    return FractionallySizedBox(
+      heightFactor: .9,
+      child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Column(children: [
+            Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: Column(children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(top: 36.0, left: 8.0, bottom: 18.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Adicionar lançamento",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black.withOpacity(0.7),
-                      ),
-                    ),
+                  const EdgeInsets.only(top: 36.0, left: 8.0, bottom: 18.0),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Adicionar lançamento",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black.withOpacity(0.7),
                   ),
                 ),
-                Form(
-                    key: key,
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16.0),
-                          padding: const EdgeInsets.only(left: 8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            Form(
+                key: key,
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 16.0),
+                      padding: const EdgeInsets.only(left: 8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: TextFormField(
+                          controller: addController,
+                          decoration: InputDecoration(
+                            hintText: "ex: Internet",
+                            labelText: "Gasto",
+                            labelStyle:
+                                TextStyle(color: Colors.grey.withOpacity(0.7)),
+                            hintStyle: const TextStyle(color: Colors.grey),
+                            border: InputBorder.none,
+                            fillColor: Colors.grey,
                           ),
-                          child: TextFormField(
-                              controller: addController,
-                              decoration: InputDecoration(
-                                hintText: "ex: Internet",
-                                labelText: "Gasto",
-                                labelStyle: TextStyle(
-                                    color: Colors.grey.withOpacity(0.7)),
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                                fillColor: Colors.grey,
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Gasto obrigatório";
-                                }
-                                return null;
-                              }),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.only(bottom: 16.0),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ElevatedButton(
-                                          onPressed: () async {
-                                            setState(() {
-                                              entryType = "0";
-                                            });
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white,
-                                              elevation: 3,
-                                              foregroundColor:
-                                                  const Color(0xff5EA3A3)),
-                                          child: const Text(
-                                            "Entrada",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black54),
-                                          ))),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Gasto obrigatório";
+                            }
+                            return null;
+                          }),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.only(bottom: 16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
                                       onPressed: () async {
                                         setState(() {
-                                          entryType = "1";
+                                          entryType = "0";
                                         });
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                        elevation: 3,
-                                        foregroundColor:
-                                            const Color(0xff5EA3A3),
-                                      ),
+                                          backgroundColor: Colors.white,
+                                          elevation: 3,
+                                          foregroundColor:
+                                              const Color(0xff5EA3A3)),
                                       child: const Text(
-                                        "Saída",
+                                        "Entrada",
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black54),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
+                                      ))),
                             ),
-                          ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      entryType = "1";
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    elevation: 3,
+                                    foregroundColor: const Color(0xff5EA3A3),
+                                  ),
+                                  child: const Text(
+                                    "Saída",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black54),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                        Container(
-                          decoration: BoxDecoration(
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.05),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                      ),
+                      child: Builder(builder: (context) {
+                        return TextFormField(
+                            controller: addControllerValue,
+                            decoration: InputDecoration(
+                                hintText: "R\$ 0,00",
+                                labelText: "Valor",
+                                labelStyle: TextStyle(
+                                  color: Colors.grey.withOpacity(0.7),
+                                ),
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                border: InputBorder.none,
+                                fillColor: Colors.orange,
+                                prefixIcon: entryType == "0"
+                                    ? Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 16.0),
+                                        width: 50,
+                                        height: 50,
+                                        decoration: const BoxDecoration(
+                                            color: Colors.blue,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10.0),
+                                                bottomLeft:
+                                                    Radius.circular(10.0))),
+                                        child: const Icon(
+                                          Icons.arrow_downward,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      )
+                                    : Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 16.0),
+                                        width: 50,
+                                        height: 50,
+                                        decoration: const BoxDecoration(
+                                            color: Colors.redAccent,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10.0),
+                                                bottomLeft:
+                                                    Radius.circular(10.0))),
+                                        child: const Icon(
+                                          Icons.arrow_upward,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      )),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Gasto obrigatório";
+                              }
+                              return null;
+                            });
+                      }),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.05),
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                          ),
-                          child: Builder(builder: (context) {
-                            return TextFormField(
-                                controller: addControllerValue,
-                                decoration: InputDecoration(
-                                    hintText: "R\$ 0,00",
-                                    labelText: "Valor",
-                                    labelStyle: TextStyle(
-                                      color: Colors.grey.withOpacity(0.7),
-                                    ),
-                                    hintStyle:
-                                        const TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
-                                    fillColor: Colors.orange,
-                                    prefixIcon: entryType == "0"
-                                        ? Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 16.0),
-                                            width: 50,
-                                            height: 50,
-                                            decoration: const BoxDecoration(
-                                                color: Colors.blue,
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(10.0),
-                                                    bottomLeft:
-                                                        Radius.circular(10.0))),
-                                            child: const Icon(
-                                              Icons.arrow_downward,
-                                              color: Colors.white,
-                                              size: 30,
-                                            ),
-                                          )
-                                        : Container(
-                                            margin: const EdgeInsets.only(
-                                                right: 16.0),
-                                            width: 50,
-                                            height: 50,
-                                            decoration: const BoxDecoration(
-                                                color: Colors.redAccent,
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(10.0),
-                                                    bottomLeft:
-                                                        Radius.circular(10.0))),
-                                            child: const Icon(
-                                              Icons.arrow_upward,
-                                              color: Colors.white,
-                                              size: 30,
-                                            ),
-                                          )),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Gasto obrigatório";
-                                  }
-                                  return null;
+                            borderRadius: BorderRadius.circular(10.0)),
+                        child: StatefulBuilder(builder: (context, setState) {
+                          return DropdownButton<Category>(
+                              items: state.categories.map((Category category) {
+                                return DropdownMenuItem<Category>(
+                                  value: category,
+                                  child: Text(
+                                    category.name,
+                                    style: const TextStyle(color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                              isExpanded: true,
+                              // underline: const SizedBox(),
+                              // value: selectedCategory,
+                              onChanged: (Category? newValue) {
+                                setState(() {
+                                  selectedCategory = newValue;
+                                  // BlocProvider.of<CategoriesListController>(context).loadCategories();
                                 });
-                          }),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Container(
+                              },
+                              dropdownColor: Colors.white,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ));
+                        }),
+                      ),
+                    ),
+                    Builder(builder: (context) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.05,
                             decoration: BoxDecoration(
                                 color: Colors.grey.withOpacity(0.05),
                                 borderRadius: BorderRadius.circular(10.0)),
-                            child:
-                                StatefulBuilder(builder: (context, setState) {
-                              return DropdownButton<Category>(
-                                  items: state.categories.map((category) {
-                                    return DropdownMenuItem(
-                                      value: category,
-                                      child: Text(
-                                        category.name,
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  isExpanded: true,
-                                  underline: const SizedBox(),
-                                  value: selectedCategory,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedCategory = newValue;
-                                    });
-                                  },
-                                  dropdownColor: Colors.white,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10),
-                                  ));
-                            }),
-                          ),
-                        ),
-                        Builder(builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.05,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.05),
-                                    borderRadius: BorderRadius.circular(10.0)),
-                                child: ElevatedButton(
-                                    onPressed: () async {
-                                      DateTime? pickedDate =
-                                          await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2000),
-                                        lastDate: DateTime(2050),
-                                      );
-                                      setState(() {
-                                        selectedDate = pickedDate;
-                                      });
-                                    },
-                                    child: const Text(
-                                      "Data do lançamento",
-                                      style: TextStyle(color: Colors.white),
-                                    ))),
-                          );
-                        }),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.only(
-                            left: 10.0,
-                            right: 10.0,
-                            top: 48.0,
-                            bottom: 36.0,
-                          ),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (key.currentState?.validate() ?? false) {
-                                final entry = Entry(
-                                  name: addController.text,
-                                  value: double.parse(addControllerValue.text),
-                                  entryType: entryType,
-                                  category: null,
-                                  categoryId: selectedCategory?.id ?? 0,
-                                  entryDate: selectedDate,
-                                );
-                                await controller.addEntry(
-                                    entry, selectedCategory?.id ?? 0);
-                                
-                                addController.clear();
-                                addControllerValue.clear();
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime(2050),
+                                  );
+                                  setState(() {
+                                    selectedDate = pickedDate;
+                                  });
+                                },
+                                child: const Text(
+                                  "Data do lançamento",
+                                  style: TextStyle(color: Colors.white),
+                                ))),
+                      );
+                    }),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.only(
+                        left: 10.0,
+                        right: 10.0,
+                        top: 48.0,
+                        bottom: 36.0,
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (key.currentState?.validate() ?? false) {
+                            final entry = Entry(
+                              name: addController.text,
+                              value: double.parse(addControllerValue.text),
+                              entryType: entryType,
+                              category: null,
+                              categoryId: selectedCategory?.id ?? 0,
+                              entryDate: selectedDate,
+                            );
+                            await controller.addEntry(
+                                entry, selectedCategory?.id ?? 0);
 
-                                scaffold.showSnackBar(const SnackBar(
-                                  content: Text("Gasto adicionado com sucesso"),
-                                  duration: Duration(seconds: 2),
-                                ));
-                                nav.pop();
-                                controller.loadExpenses();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff5EA3A3),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              padding: const EdgeInsets.only(
-                                  top: 18.0, bottom: 18.0),
-                            ),
-                            child: const Text(
-                              "SALVAR",
-                              style: TextStyle(fontSize: 16),
-                            ),
+                            addController.clear();
+                            addControllerValue.clear();
+
+                            scaffold.showSnackBar(const SnackBar(
+                              content: Text("Gasto adicionado com sucesso"),
+                              duration: Duration(seconds: 2),
+                            ));
+                            nav.pop();
+                            controller.loadExpenses();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff5EA3A3),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
                           padding:
-                              const EdgeInsets.only(left: 10.0, right: 10.0),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await controller.loadExpenses();
-                              nav.pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff5EA3A3),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              padding: const EdgeInsets.only(
-                                  top: 18.0, bottom: 18.0),
-                            ),
-                            child: const Text(
-                              "CANCELAR",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
+                              const EdgeInsets.only(top: 18.0, bottom: 18.0),
                         ),
-                      ],
-                    )),
-              ])));
-    });
+                        child: const Text(
+                          "SALVAR",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await controller.loadExpenses();
+                          nav.pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff5EA3A3),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          padding:
+                              const EdgeInsets.only(top: 18.0, bottom: 18.0),
+                        ),
+                        child: const Text(
+                          "CANCELAR",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+          ])),
+    );
   }
 }
