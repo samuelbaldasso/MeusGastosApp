@@ -102,6 +102,7 @@ class _LoginScreenState extends BaseState<LoginScreen, LoginController> {
                               padding: const EdgeInsets.only(left: 8.0),
                               child: TextFormField(
                                   controller: password,
+                                  obscureText: true,
                                   decoration: const InputDecoration(
                                     hintText: "Digite sua senha",
                                     hintStyle: TextStyle(
@@ -109,6 +110,7 @@ class _LoginScreenState extends BaseState<LoginScreen, LoginController> {
                                     ),
                                     border: InputBorder.none,
                                     fillColor: Colors.grey,
+
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

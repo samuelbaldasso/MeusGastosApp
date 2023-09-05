@@ -31,13 +31,13 @@ class ExpensesListController extends Cubit<ExpensesListState> {
     try {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
-      final result = await apiRepository.getEntries(uid);
-      log(result.map((e) => e.category?.name).toString());
+      final expensesList = await apiRepository.getEntries(uid);
+      final categoriesList = await apiRepository.getData(uid);
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded,
-          expenses: result,
-          categories: categories,
-          ));
+        status: ExpensesListStatus.loaded,
+        expenses: expensesList,
+        categories: categoriesList,
+      ));
     } catch (e, s) {
       log("Erro ao carregar gastos.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -45,16 +45,37 @@ class ExpensesListController extends Cubit<ExpensesListState> {
     }
   }
 
-  Future<void> addEntry(Entry entry, Category? selectedCategory) async {
+  // Future<void> addEntry(Entry entry, Category? selectedCategory) async {
+  //   try {
+  //     emit(state.copyWith(status: ExpensesListStatus.loading));
+  //     final uid = await authRepository.getUid();
+  //     await apiRepository.saveEntry(uid, entry, selectedCategory);
+  //     emit(state.copyWith(
+  //         status: ExpensesListStatus.loaded,
+  //         expenses: expenses,
+  //         categories: categories,
+  //         ));
+  //   } catch (e, s) {
+  //     log("Erro ao adicionar gasto.", error: e, stackTrace: s);
+  //     emit(state.copyWith(status: ExpensesListStatus.error));
+  //     throw Exception("$e, $s");
+  //   }
+  // }
+
+  Future<void> addEntry(Entry entry, int id) async {
     try {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
-      await apiRepository.saveEntry(uid, entry, selectedCategory);
+      await apiRepository.saveEntry(uid, entry, id);
+
+      // Add the new entry to the existing list of expenses
+      List<Entry> updatedExpenses = await apiRepository.getEntries(uid);
+      
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded,
-          expenses: expenses,
-          categories: categories,
-          ));
+        status: ExpensesListStatus.loaded,
+        expenses: updatedExpenses,
+        categories: categories,
+      ));
     } catch (e, s) {
       log("Erro ao adicionar gasto.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -70,10 +91,10 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final updatedExpenses =
           state.expenses.where((c) => c.id != entry.id).toList();
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded,
-          expenses: updatedExpenses,
-          categories: categories,
-          ));
+        status: ExpensesListStatus.loaded,
+        expenses: updatedExpenses,
+        categories: categories,
+      ));
     } catch (e, s) {
       log("Erro ao remover gasto.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -81,18 +102,18 @@ class ExpensesListController extends Cubit<ExpensesListState> {
     }
   }
 
-  Future<void> updateEntry(Entry entry, Category? selectedCategory) async {
+  Future<void> updateEntry(Entry entry, int id) async {
     try {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
-      await apiRepository.updateEntry(uid, entry, selectedCategory);
+      await apiRepository.updateEntry(uid, entry, id);
       final updatedExpenses = await apiRepository.getEntries(uid);
       final updatedCategories = await apiRepository.getData(uid);
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded,
-          expenses: updatedExpenses,
-          categories: updatedCategories,
-          ));
+        status: ExpensesListStatus.loaded,
+        expenses: updatedExpenses,
+        categories: updatedCategories,
+      ));
     } catch (e, s) {
       log("Erro ao atualizar categoria.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
