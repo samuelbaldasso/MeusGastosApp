@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int? selectedIndex = 0;
+  int? selectedIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -301,18 +301,8 @@ class _CategoriesListState
                             return Dismissible(
                               key: Key(state.categories[index].id.toString()),
                               onDismissed: (direction) async {
-                                if (direction == DismissDirection.endToStart) {
-                                  await controller
-                                      .deleteCategory(state.categories[index]);
-
-                                  scaffold.showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Categoria excluída com sucesso"),
-                                    ),
-                                  );
-                                } else if (direction ==
-                                    DismissDirection.startToEnd) {
+                                if (direction ==
+                                    DismissDirection.startToEnd || direction == DismissDirection.endToStart) {
                                   showModalBottomSheet(
                                       isScrollControlled: true,
                                       isDismissible: true,
@@ -578,13 +568,13 @@ class _CategoriesListState
                                       });
                                 }
                               },
-                              secondaryBackground: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(right: 20.0),
-                                child: const Icon(Icons.delete,
-                                    color: Colors.white),
-                              ),
+                              // secondaryBackground: Container(
+                              //   color: Colors.red,
+                              //   alignment: Alignment.centerRight,
+                              //   padding: const EdgeInsets.only(right: 20.0),
+                              //   child: const Icon(Icons.delete,
+                              //       color: Colors.white),
+                              // ),
                               background: Container(
                                 color: Colors.green,
                                 alignment: Alignment.centerLeft,
