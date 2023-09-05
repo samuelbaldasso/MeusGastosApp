@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meus_gastos/core/base_state.dart';
 import 'package:meus_gastos/models/category.dart';
 import 'package:meus_gastos/pages/categories_list/categories_list_controller.dart';
 import 'package:meus_gastos/pages/categories_list/categories_list_state.dart';
+import 'package:meus_gastos/pages/expenses/expenses_list_controller.dart';
 
 class CategoriesList extends StatefulWidget {
   const CategoriesList({super.key});
@@ -188,6 +191,7 @@ class _CategoriesListState
                                               ));
                                               nav.pop();
                                               controller.loadCategories();
+                                              controller.loadExpenses();
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -300,6 +304,7 @@ class _CategoriesListState
                                 if (direction == DismissDirection.endToStart) {
                                   await controller
                                       .deleteCategory(state.categories[index]);
+
                                   scaffold.showSnackBar(
                                     const SnackBar(
                                       content: Text(

@@ -24,6 +24,7 @@ class ExpensesListRouter {
               context.read<ImplAuthRepository>(),
               context.read<ImplApiRepository>(),
               [],
+              []
             ),
           ),
           ProxyProvider2<ImplAuthRepository, ImplApiRepository, ExpensesListController>(

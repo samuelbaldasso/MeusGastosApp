@@ -45,22 +45,21 @@ class ExpensesListController extends Cubit<ExpensesListState> {
     }
   }
 
-  // Future<void> addEntry(Entry entry, Category? selectedCategory) async {
-  //   try {
-  //     emit(state.copyWith(status: ExpensesListStatus.loading));
-  //     final uid = await authRepository.getUid();
-  //     await apiRepository.saveEntry(uid, entry, selectedCategory);
-  //     emit(state.copyWith(
-  //         status: ExpensesListStatus.loaded,
-  //         expenses: expenses,
-  //         categories: categories,
-  //         ));
-  //   } catch (e, s) {
-  //     log("Erro ao adicionar gasto.", error: e, stackTrace: s);
-  //     emit(state.copyWith(status: ExpensesListStatus.error));
-  //     throw Exception("$e, $s");
-  //   }
-  // }
+    Future<void> deleteCategory(Category category) async {
+    try {
+      emit(state.copyWith(status: ExpensesListStatus.loading));
+      final uid = await authRepository.getUid();
+      await apiRepository.deleteData(uid, category.id!);
+      final updatedCategories =
+          state.categories.where((c) => c.id != category.id).toList();
+      emit(state.copyWith(
+          status: ExpensesListStatus.loaded, categories: updatedCategories, expenses: expenses));
+    } catch (e, s) {
+      log("Erro ao remover categoria.", error: e, stackTrace: s);
+      emit(state.copyWith(status: ExpensesListStatus.error));
+      throw Exception("$e, $s");
+    }
+  }
 
   Future<void> addEntry(Entry entry, int id) async {
     try {

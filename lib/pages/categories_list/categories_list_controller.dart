@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meus_gastos/models/category.dart';
+import 'package:meus_gastos/models/entry.dart';
 import 'package:meus_gastos/pages/categories_list/categories_list_state.dart';
 import 'package:meus_gastos/repositories/api/api_repository.dart';
 import 'package:meus_gastos/repositories/auth/auth_repository.dart';
@@ -10,9 +11,10 @@ class CategoriesListController extends Cubit<CategoriesListState> {
   final AuthRepository authRepository;
   final ApiRepository apiRepository;
   final List<Category> categories;
+  final List<Entry> entries;
 
   CategoriesListController(
-      this.authRepository, this.apiRepository, this.categories)
+      this.authRepository, this.apiRepository, this.categories, this.entries)
       : super(const CategoriesListState.initial());
 
   Future<void> logout() async {
@@ -38,20 +40,23 @@ class CategoriesListController extends Cubit<CategoriesListState> {
     }
   }
 
-  // Future<Category> loadById(Category category) async {
-  //   try {
-  //     emit(state.copyWith(status: CategoriesListStatus.loading));
-  //     final uid = await authRepository.getUid();
-  //     final cat = await apiRepository.getDataById(uid, category.id ?? 0);
-  //     emit(state.copyWith(
-  //         status: CategoriesListStatus.loaded, categories: categories));
-  //     return cat;
-  //   } catch (e, s) {
-  //     log("Erro ao carregar categoria.", error: e, stackTrace: s);
-  //     emit(state.copyWith(status: CategoriesListStatus.error));
-  //     throw Exception("$e, $s");
-  //   }
-  // }
+  Future<void> loadExpenses() async {
+    try {
+      emit(state.copyWith(status: CategoriesListStatus.loading));
+      final uid = await authRepository.getUid();
+      final expensesList = await apiRepository.getEntries(uid);
+      final categoriesList = await apiRepository.getData(uid);
+      emit(state.copyWith(
+        status: CategoriesListStatus.loaded,
+        entries: expensesList,
+        categories: categoriesList,
+      ));
+    } catch (e, s) {
+      log("Erro ao carregar gastos.", error: e, stackTrace: s);
+      emit(state.copyWith(status: CategoriesListStatus.error));
+      throw Exception("$e, $s");
+    }
+  }
 
   Future<void> addCategory(Category category) async {
     try {

@@ -104,6 +104,7 @@ class _RegisterScreenState extends BaseState<RegisterScreen, RegisterController>
                               padding: const EdgeInsets.only(left: 8.0),
                               child: TextFormField(
                                   controller: password,
+                                  obscureText: true,
                                   decoration: const InputDecoration(
                                     hintText: "Digite sua senha",
                                     hintStyle: TextStyle(
@@ -134,6 +135,7 @@ class _RegisterScreenState extends BaseState<RegisterScreen, RegisterController>
                               padding: const EdgeInsets.only(left: 8.0),
                               child: TextFormField(
                                   controller: confirmPassword,
+                                  obscureText: true,
                                   decoration: const InputDecoration(
                                     hintText: "Confirme sua senha",
                                     hintStyle: TextStyle(

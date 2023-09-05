@@ -287,546 +287,564 @@ class _ExpensesListState
                                 SingleChildScrollView(
                                   physics: const BouncingScrollPhysics(),
                                   child: ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: state.expenses.length,
-                                    itemBuilder: (context, index) {
-                                      var item = state.expenses[index];
-                                      var cat = state.categories;
+                                      shrinkWrap: true,
+                                      itemCount: state.expenses.length,
+                                      itemBuilder: (context, index) {
+                                        var item = state.expenses[index];
+                                        var cat = state.categories;
 
-                                      return Builder(builder: (context) {
-                                        return Dismissible(
-                                          key: Key(item.id.toString()),
-                                          onDismissed: (direction) async {
-                                            if (direction ==
-                                                DismissDirection.endToStart) {
-                                              setState(() {
-                                                state.expenses.removeAt(
-                                                    index); // supondo que 'myList' é a sua lista de dados
-                                              });
-                                              await controller
-                                                  .deleteEntry(item);
-                                              scaffold.showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      "Gasto excluído com sucesso"),
-                                                ),
-                                              );
-                                            } else if (direction ==
-                                                DismissDirection.startToEnd) {
-                                              showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  isDismissible: false,
-                                                  context: context,
-                                                  enableDrag: false,
-                                                  builder: (context) {
-                                                    return FractionallySizedBox(
-                                                      heightFactor: .9,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    16.0),
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                      .only(
-                                                                  top: 36.0,
-                                                                  left: 8.0,
-                                                                  bottom:
-                                                                      18.0),
-                                                              child: Align(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .topLeft,
-                                                                child: Text(
-                                                                  "Editar lançamento",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        32,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .black
-                                                                        .withOpacity(
-                                                                            0.7),
+                                        final itemWithCat = cat
+                                            .where((element) =>
+                                                element.id == item.categoryId)
+                                            .toList();
+
+                                        log(itemWithCat.map((e) => e.isInativo).toString());
+
+                                        return Builder(builder: (context) {
+                                          return Dismissible(
+                                            key: Key(item.id.toString()),
+                                            onDismissed: (direction) async {
+                                              if (direction ==
+                                                  DismissDirection.endToStart) {
+                                                
+                                                  if (itemWithCat.isEmpty) {
+                                                    await controller
+                                                        .deleteEntry(item);
+                                                    await controller
+                                                        .deleteCategory(
+                                                            cat[index]);
+                                                    scaffold.showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            "Gasto e categoria associada excluídas com sucesso"),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    await controller
+                                                        .deleteEntry(item);
+                                                    scaffold.showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            "Gasto excluído com sucesso"),
+                                                      ),
+                                                    );
+                                                    nav.popAndPushNamed(
+                                                        "/home");
+                                                  }
+                                               
+                                              } else if (direction ==
+                                                  DismissDirection.startToEnd) {
+                                                showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    isDismissible: false,
+                                                    context: context,
+                                                    enableDrag: false,
+                                                    builder: (context) {
+                                                      return FractionallySizedBox(
+                                                        heightFactor: .9,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Column(
+                                                            children: [
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .only(
+                                                                    top: 36.0,
+                                                                    left: 8.0,
+                                                                    bottom:
+                                                                        18.0),
+                                                                child: Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .topLeft,
+                                                                  child: Text(
+                                                                    "Editar lançamento",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          32,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.7),
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            Form(
-                                                              key: keyEdit,
-                                                              child: Column(
-                                                                children: [
-                                                                  Container(
-                                                                    margin: const EdgeInsets
-                                                                            .only(
-                                                                        bottom:
-                                                                            16.0),
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            8.0),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .withOpacity(0.05),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(8.0),
-                                                                    ),
-                                                                    child: TextFormField(
-                                                                        controller: categoryEditController,
-                                                                        decoration: InputDecoration(
-                                                                          hintText:
-                                                                              "ex: Internet",
-                                                                          labelText:
-                                                                              "Gasto",
-                                                                          labelStyle:
-                                                                              TextStyle(color: Colors.grey.withOpacity(0.7)),
-                                                                          hintStyle:
-                                                                              const TextStyle(color: Colors.grey),
-                                                                          border:
-                                                                              InputBorder.none,
-                                                                          fillColor:
-                                                                              Colors.grey,
-                                                                        ),
-                                                                        validator: (value) {
-                                                                          if (value == null ||
-                                                                              value.isEmpty) {
-                                                                            return "Gasto obrigatório";
-                                                                          }
-                                                                          return null;
-                                                                        }),
-                                                                  ),
-                                                                  Container(
-                                                                    width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width,
-                                                                    margin: const EdgeInsets
-                                                                            .only(
-                                                                        bottom:
-                                                                            16.0),
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .withOpacity(0.05),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(8.0),
-                                                                    ),
-                                                                    child:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.all(16.0),
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceAround,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.center,
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.max,
-                                                                        children: [
-                                                                          Expanded(
-                                                                            child: Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: ElevatedButton(
-                                                                                onPressed: () async {
-                                                                                  item.entryType = "0";
-                                                                                },
-                                                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.white, elevation: 3, disabledBackgroundColor: const Color(0xff5EA3A3)),
-                                                                                child: const Text(
-                                                                                  "Entrada",
-                                                                                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Expanded(
-                                                                            child: Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: ElevatedButton(
-                                                                                onPressed: () {
-                                                                                  item.entryType = "1";
-                                                                                },
-                                                                                style: ElevatedButton.styleFrom(
-                                                                                  backgroundColor: Colors.white,
-                                                                                  elevation: 3,
-                                                                                ),
-                                                                                child: const Text(
-                                                                                  "Saída",
-                                                                                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        ],
+                                                              Form(
+                                                                key: keyEdit,
+                                                                child: Column(
+                                                                  children: [
+                                                                    Container(
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          bottom:
+                                                                              16.0),
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              8.0),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .withOpacity(0.05),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
                                                                       ),
-                                                                    ),
-                                                                  ),
-                                                                  Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .withOpacity(0.05),
-                                                                      borderRadius: const BorderRadius.only(
-                                                                          topLeft:
-                                                                              Radius.circular(10),
-                                                                          topRight: Radius.circular(10)),
-                                                                    ),
-                                                                    child: Builder(
-                                                                        builder:
-                                                                            (context) {
-                                                                      return TextFormField(
-                                                                          controller:
-                                                                              descriptionEditController,
+                                                                      child: TextFormField(
+                                                                          controller: categoryEditController,
                                                                           decoration: InputDecoration(
-                                                                              hintText: "R\$ 0,00",
-                                                                              labelText: "Valor",
-                                                                              labelStyle: TextStyle(
-                                                                                color: Colors.grey.withOpacity(0.7),
-                                                                              ),
-                                                                              hintStyle: const TextStyle(color: Colors.grey),
-                                                                              border: InputBorder.none,
-                                                                              fillColor: Colors.orange,
-                                                                              prefixIcon: item.entryType == "0"
-                                                                                  ? Container(
-                                                                                      margin: const EdgeInsets.only(right: 16.0),
-                                                                                      width: 50,
-                                                                                      height: 50,
-                                                                                      decoration: const BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0))),
-                                                                                      child: const Icon(
-                                                                                        Icons.arrow_downward,
-                                                                                        color: Colors.white,
-                                                                                        size: 30,
-                                                                                      ),
-                                                                                    )
-                                                                                  : Container(
-                                                                                      margin: const EdgeInsets.only(right: 16.0),
-                                                                                      width: 50,
-                                                                                      height: 50,
-                                                                                      decoration: const BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0))),
-                                                                                      child: const Icon(
-                                                                                        Icons.arrow_upward,
-                                                                                        color: Colors.white,
-                                                                                        size: 30,
-                                                                                      ),
-                                                                                    )),
+                                                                            hintText:
+                                                                                "ex: Internet",
+                                                                            labelText:
+                                                                                "Gasto",
+                                                                            labelStyle:
+                                                                                TextStyle(color: Colors.grey.withOpacity(0.7)),
+                                                                            hintStyle:
+                                                                                const TextStyle(color: Colors.grey),
+                                                                            border:
+                                                                                InputBorder.none,
+                                                                            fillColor:
+                                                                                Colors.grey,
+                                                                          ),
                                                                           validator: (value) {
-                                                                            if (value == null || value.isEmpty) {
+                                                                            if (value == null ||
+                                                                                value.isEmpty) {
                                                                               return "Gasto obrigatório";
                                                                             }
                                                                             return null;
-                                                                          });
-                                                                    }),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                        vertical:
-                                                                            8.0),
-                                                                    child:
-                                                                        Container(
-                                                                      width: MediaQuery.of(context)
+                                                                          }),
+                                                                    ),
+                                                                    Container(
+                                                                      width: MediaQuery.of(
+                                                                              context)
                                                                           .size
                                                                           .width,
-                                                                      height: MediaQuery.of(context).size.height *
-                                                                          0.05,
-                                                                      decoration: BoxDecoration(
-                                                                          color:
-                                                                              Colors.grey.withOpacity(0.05),
-                                                                          borderRadius: BorderRadius.circular(10.0)),
-                                                                      child: StatefulBuilder(builder:
-                                                                          (context,
-                                                                              setState) {
-                                                                        return DropdownButton<Category>(
-                                                                            items: state.categories.map((Category category) {
-                                                                              return DropdownMenuItem<Category>(
-                                                                                value: category,
-                                                                                child: Text(
-                                                                                  category.name,
-                                                                                  style: const TextStyle(color: Colors.black),
-                                                                                ),
-                                                                              );
-                                                                            }).toList(),
-                                                                            // value:
-                                                                            //     selectedCategory ?? defaultCategory,
-                                                                            isExpanded: true,
-                                                                            // underline:
-                                                                            //     const SizedBox(),
-                                                                            onChanged: (Category? newValue) {
-                                                                              setState(() {
-                                                                                selectedCategory = newValue;
-                                                                              });
-                                                                            },
-                                                                            dropdownColor: Colors.white,
-                                                                            borderRadius: const BorderRadius.only(
-                                                                              topLeft: Radius.circular(10),
-                                                                              topRight: Radius.circular(10),
-                                                                            ));
-                                                                      }),
-                                                                    ),
-                                                                  ),
-                                                                  Builder(
-                                                                      builder:
-                                                                          (
-                                                                    context,
-                                                                  ) {
-                                                                    return Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.symmetric(vertical: 8.0),
-                                                                      child: Container(
-                                                                          width: MediaQuery.of(context).size.width,
-                                                                          height: MediaQuery.of(context).size.height * 0.05,
-                                                                          decoration: BoxDecoration(color: Colors.grey.withOpacity(0.05), borderRadius: BorderRadius.circular(10.0)),
-                                                                          child: ElevatedButton(
-                                                                              onPressed: () async {
-                                                                                DateTime? pickedDate = await showDatePicker(
-                                                                                  context: context,
-                                                                                  initialDate: DateTime.now(),
-                                                                                  firstDate: DateTime(2000),
-                                                                                  lastDate: DateTime(2050),
-                                                                                );
-                                                                                setState(() {
-                                                                                  selectedDate = pickedDate;
-                                                                                });
-                                                                              },
-                                                                              child: const Text(
-                                                                                "Data do lançamento",
-                                                                                style: TextStyle(color: Colors.white),
-                                                                              ))),
-                                                                    );
-                                                                  }),
-                                                                  Container(
-                                                                    width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width,
-                                                                    padding:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                      left:
-                                                                          10.0,
-                                                                      right:
-                                                                          10.0,
-                                                                      top:
-                                                                          48.0,
-                                                                      bottom:
-                                                                          36.0,
-                                                                    ),
-                                                                    child:
-                                                                        ElevatedButton(
-                                                                      onPressed:
-                                                                          () async {
-                                                                        if (keyEdit.currentState?.validate() ??
-                                                                            false) {
-                                                                          final entryUpdated = Entry(
-                                                                              name: categoryEditController.text,
-                                                                              value: double.parse(
-                                                                                descriptionEditController.text,
-                                                                              ),
-                                                                              entryType: item.entryType,
-                                                                              category: null,
-                                                                              categoryId: selectedCategory?.id ?? 0,
-                                                                              dateCreated: item.dateCreated,
-                                                                              id: item.id,
-                                                                              dateUpdated: item.dateUpdated,
-                                                                              entryDate: selectedDate,
-                                                                              isChanged: item.isChanged,
-                                                                              isInativo: item.isInativo,
-                                                                              uid: item.uid,
-                                                                              uidFirebase: item.uidFirebase);
-
-                                                                          await controller.updateEntry(entryUpdated,
-                                                                              selectedCategory?.id ?? 0);
-
-                                                                          nav.pop();
-                                                                        }
-                                                                      },
-                                                                      style: ElevatedButton
-                                                                          .styleFrom(
-                                                                        backgroundColor:
-                                                                            const Color(0xff5EA3A3),
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(8.0),
-                                                                        ),
-                                                                        padding: const EdgeInsets.only(
-                                                                            top: 18.0,
-                                                                            bottom: 18.0),
+                                                                      margin: const EdgeInsets
+                                                                              .only(
+                                                                          bottom:
+                                                                              16.0),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .withOpacity(0.05),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8.0),
                                                                       ),
                                                                       child:
-                                                                          const Text(
-                                                                        "SALVAR",
-                                                                        style:
-                                                                            TextStyle(fontSize: 16),
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(16.0),
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceAround,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.max,
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                child: ElevatedButton(
+                                                                                  onPressed: () async {
+                                                                                    item.entryType = "0";
+                                                                                  },
+                                                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.white, elevation: 3, disabledBackgroundColor: const Color(0xff5EA3A3)),
+                                                                                  child: const Text(
+                                                                                    "Entrada",
+                                                                                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                child: ElevatedButton(
+                                                                                  onPressed: () {
+                                                                                    item.entryType = "1";
+                                                                                  },
+                                                                                  style: ElevatedButton.styleFrom(
+                                                                                    backgroundColor: Colors.white,
+                                                                                    elevation: 3,
+                                                                                  ),
+                                                                                  child: const Text(
+                                                                                    "Saída",
+                                                                                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  Container(
-                                                                    width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width,
-                                                                    padding: const EdgeInsets
-                                                                            .only(
+                                                                    Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .withOpacity(0.05),
+                                                                        borderRadius: const BorderRadius.only(
+                                                                            topLeft:
+                                                                                Radius.circular(10),
+                                                                            topRight: Radius.circular(10)),
+                                                                      ),
+                                                                      child: Builder(
+                                                                          builder:
+                                                                              (context) {
+                                                                        return TextFormField(
+                                                                            controller:
+                                                                                descriptionEditController,
+                                                                            decoration: InputDecoration(
+                                                                                hintText: "R\$ 0,00",
+                                                                                labelText: "Valor",
+                                                                                labelStyle: TextStyle(
+                                                                                  color: Colors.grey.withOpacity(0.7),
+                                                                                ),
+                                                                                hintStyle: const TextStyle(color: Colors.grey),
+                                                                                border: InputBorder.none,
+                                                                                fillColor: Colors.orange,
+                                                                                prefixIcon: item.entryType == "0"
+                                                                                    ? Container(
+                                                                                        margin: const EdgeInsets.only(right: 16.0),
+                                                                                        width: 50,
+                                                                                        height: 50,
+                                                                                        decoration: const BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0))),
+                                                                                        child: const Icon(
+                                                                                          Icons.arrow_downward,
+                                                                                          color: Colors.white,
+                                                                                          size: 30,
+                                                                                        ),
+                                                                                      )
+                                                                                    : Container(
+                                                                                        margin: const EdgeInsets.only(right: 16.0),
+                                                                                        width: 50,
+                                                                                        height: 50,
+                                                                                        decoration: const BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0))),
+                                                                                        child: const Icon(
+                                                                                          Icons.arrow_upward,
+                                                                                          color: Colors.white,
+                                                                                          size: 30,
+                                                                                        ),
+                                                                                      )),
+                                                                            validator: (value) {
+                                                                              if (value == null || value.isEmpty) {
+                                                                                return "Gasto obrigatório";
+                                                                              }
+                                                                              return null;
+                                                                            });
+                                                                      }),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                          vertical:
+                                                                              8.0),
+                                                                      child:
+                                                                          Container(
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                        height: MediaQuery.of(context).size.height *
+                                                                            0.05,
+                                                                        decoration: BoxDecoration(
+                                                                            color:
+                                                                                Colors.grey.withOpacity(0.05),
+                                                                            borderRadius: BorderRadius.circular(10.0)),
+                                                                        child: StatefulBuilder(builder:
+                                                                            (context,
+                                                                                setState) {
+                                                                          return DropdownButton<Category>(
+                                                                              items: state.categories.map((Category category) {
+                                                                                return DropdownMenuItem<Category>(
+                                                                                  value: category,
+                                                                                  child: Text(
+                                                                                    category.name,
+                                                                                    style: const TextStyle(color: Colors.black),
+                                                                                  ),
+                                                                                );
+                                                                              }).toList(),
+                                                                              // value:
+                                                                              //     selectedCategory ?? defaultCategory,
+                                                                              isExpanded: true,
+                                                                              // underline:
+                                                                              //     const SizedBox(),
+                                                                              onChanged: (Category? newValue) {
+                                                                                setState(() {
+                                                                                  selectedCategory = newValue;
+                                                                                });
+                                                                              },
+                                                                              dropdownColor: Colors.white,
+                                                                              borderRadius: const BorderRadius.only(
+                                                                                topLeft: Radius.circular(10),
+                                                                                topRight: Radius.circular(10),
+                                                                              ));
+                                                                        }),
+                                                                      ),
+                                                                    ),
+                                                                    Builder(
+                                                                        builder:
+                                                                            (
+                                                                      context,
+                                                                    ) {
+                                                                      return Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(vertical: 8.0),
+                                                                        child: Container(
+                                                                            width: MediaQuery.of(context).size.width,
+                                                                            height: MediaQuery.of(context).size.height * 0.05,
+                                                                            decoration: BoxDecoration(color: Colors.grey.withOpacity(0.05), borderRadius: BorderRadius.circular(10.0)),
+                                                                            child: ElevatedButton(
+                                                                                onPressed: () async {
+                                                                                  DateTime? pickedDate = await showDatePicker(
+                                                                                    context: context,
+                                                                                    initialDate: DateTime.now(),
+                                                                                    firstDate: DateTime(2000),
+                                                                                    lastDate: DateTime(2050),
+                                                                                  );
+                                                                                  setState(() {
+                                                                                    selectedDate = pickedDate;
+                                                                                  });
+                                                                                },
+                                                                                child: const Text(
+                                                                                  "Data do lançamento",
+                                                                                  style: TextStyle(color: Colors.white),
+                                                                                ))),
+                                                                      );
+                                                                    }),
+                                                                    Container(
+                                                                      width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width,
+                                                                      padding:
+                                                                          const EdgeInsets
+                                                                              .only(
                                                                         left:
                                                                             10.0,
                                                                         right:
-                                                                            10.0),
-                                                                    child:
-                                                                        ElevatedButton(
-                                                                      onPressed:
-                                                                          () async {
-                                                                        await controller
-                                                                            .loadExpenses();
-                                                                        nav.pop();
-                                                                        categoryEditController
-                                                                            .clear();
-                                                                        descriptionEditController
-                                                                            .clear();
-                                                                        log(item
-                                                                            .entryDate!
-                                                                            .toString());
-                                                                      },
-                                                                      style: ElevatedButton
-                                                                          .styleFrom(
-                                                                        backgroundColor:
-                                                                            const Color(0xff5EA3A3),
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(8.0),
-                                                                        ),
-                                                                        padding: const EdgeInsets.only(
-                                                                            top: 18.0,
-                                                                            bottom: 18.0),
+                                                                            10.0,
+                                                                        top:
+                                                                            48.0,
+                                                                        bottom:
+                                                                            36.0,
                                                                       ),
                                                                       child:
-                                                                          const Text(
-                                                                        "CANCELAR",
-                                                                        style:
-                                                                            TextStyle(fontSize: 16),
+                                                                          ElevatedButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          if (keyEdit.currentState?.validate() ??
+                                                                              false) {
+                                                                            final entryUpdated = Entry(
+                                                                                name: categoryEditController.text,
+                                                                                value: double.parse(
+                                                                                  descriptionEditController.text,
+                                                                                ),
+                                                                                entryType: item.entryType,
+                                                                                category: null,
+                                                                                categoryId: selectedCategory?.id ?? 0,
+                                                                                dateCreated: item.dateCreated,
+                                                                                id: item.id,
+                                                                                dateUpdated: item.dateUpdated,
+                                                                                entryDate: selectedDate,
+                                                                                isChanged: item.isChanged,
+                                                                                isInativo: item.isInativo,
+                                                                                uid: item.uid,
+                                                                                uidFirebase: item.uidFirebase);
+
+                                                                            await controller.updateEntry(entryUpdated,
+                                                                                selectedCategory?.id ?? 0);
+
+                                                                            nav.pop();
+                                                                          }
+                                                                        },
+                                                                        style: ElevatedButton
+                                                                            .styleFrom(
+                                                                          backgroundColor:
+                                                                              const Color(0xff5EA3A3),
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(8.0),
+                                                                          ),
+                                                                          padding: const EdgeInsets.only(
+                                                                              top: 18.0,
+                                                                              bottom: 18.0),
+                                                                        ),
+                                                                        child:
+                                                                            const Text(
+                                                                          "SALVAR",
+                                                                          style:
+                                                                              TextStyle(fontSize: 16),
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                    Container(
+                                                                      width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width,
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          left:
+                                                                              10.0,
+                                                                          right:
+                                                                              10.0),
+                                                                      child:
+                                                                          ElevatedButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          await controller
+                                                                              .loadExpenses();
+                                                                          nav.pop();
+                                                                          categoryEditController
+                                                                              .clear();
+                                                                          descriptionEditController
+                                                                              .clear();
+                                                                          log(item
+                                                                              .entryDate!
+                                                                              .toString());
+                                                                        },
+                                                                        style: ElevatedButton
+                                                                            .styleFrom(
+                                                                          backgroundColor:
+                                                                              const Color(0xff5EA3A3),
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(8.0),
+                                                                          ),
+                                                                          padding: const EdgeInsets.only(
+                                                                              top: 18.0,
+                                                                              bottom: 18.0),
+                                                                        ),
+                                                                        child:
+                                                                            const Text(
+                                                                          "CANCELAR",
+                                                                          style:
+                                                                              TextStyle(fontSize: 16),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    );
-                                                  });
-                                            }
-                                          },
-                                          secondaryBackground: Container(
-                                            color: Colors.red,
-                                            alignment: Alignment.centerRight,
-                                            padding: const EdgeInsets.only(
-                                                right: 20.0),
-                                            child: const Icon(Icons.delete,
-                                                color: Colors.white),
-                                          ),
-                                          background: Container(
-                                            color: Colors.green,
-                                            alignment: Alignment.centerLeft,
-                                            padding: const EdgeInsets.only(
-                                                left: 20.0),
-                                            child: const Icon(Icons.edit,
-                                                color: Colors.white),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.all(16.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    item.entryType == "0"
-                                                        ? Container(
-                                                            width: 30.0,
-                                                            height: 30.0,
-                                                            decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .blue,
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        15.0)),
-                                                            child: const Icon(
-                                                                Icons
-                                                                    .arrow_downward,
-                                                                color: Colors
-                                                                    .white))
-                                                        : Container(
-                                                            width: 30.0,
-                                                            height: 30.0,
-                                                            decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .red,
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        15.0)),
-                                                            child: const Icon(
-                                                                Icons
-                                                                    .arrow_upward,
-                                                                color: Colors
-                                                                    .white)),
-                                                    const SizedBox(
-                                                      width: 16.0,
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        Text(item.name),
-                                                        Text(cat
-                                                            .where((element) =>
-                                                                element.id ==
-                                                                state
-                                                                    .expenses[
-                                                                        index]
-                                                                    .categoryId)
-                                                            .toList()
-                                                            .map(
-                                                                (e) => e.name)
-                                                            .toList()
-                                                            .first),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: [
-                                                    Text(item.entryType == "0"
-                                                        ? "+ ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(item.value)}"
-                                                        : "- ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(item.value)}"),
-                                                    Text(DateFormat.yMd(
-                                                            'pt-BR')
-                                                        .format(item
-                                                                .entryDate ??
-                                                            DateTime.now())),
-                                                  ],
-                                                ),
-                                              ],
+                                                      );
+                                                    });
+                                              }
+                                            },
+                                            secondaryBackground: Container(
+                                              color: Colors.red,
+                                              alignment: Alignment.centerRight,
+                                              padding: const EdgeInsets.only(
+                                                  right: 20.0),
+                                              child: const Icon(Icons.delete,
+                                                  color: Colors.white),
                                             ),
-                                          ),
-                                        );
-                                      });
-                                    },
-                                  ),
+                                            background: Container(
+                                              color: Colors.green,
+                                              alignment: Alignment.centerLeft,
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: const Icon(Icons.edit,
+                                                  color: Colors.white),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      item.entryType == "0"
+                                                          ? Container(
+                                                              width: 30.0,
+                                                              height: 30.0,
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .blue,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                          15.0)),
+                                                              child: const Icon(
+                                                                  Icons
+                                                                      .arrow_downward,
+                                                                  color: Colors
+                                                                      .white))
+                                                          : Container(
+                                                              width: 30.0,
+                                                              height: 30.0,
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .red,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                          15.0)),
+                                                              child: const Icon(
+                                                                  Icons
+                                                                      .arrow_upward,
+                                                                  color: Colors
+                                                                      .white)),
+                                                      const SizedBox(
+                                                        width: 16.0,
+                                                      ),
+                                                      Column(
+                                                        children: [
+                                                          Text(item.name),
+                                                          Text(cat
+                                                              .where((element) =>
+                                                                  element.id ==
+                                                                  item
+                                                                      .categoryId)
+                                                              .toList()
+                                                              .map(
+                                                                  (e) => e.name)
+                                                              .toList()
+                                                              .first),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Text(item.entryType == "0"
+                                                          ? "+ ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(item.value)}"
+                                                          : "- ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(item.value)}"),
+                                                      Text(DateFormat.yMd(
+                                                              'pt-BR')
+                                                          .format(item
+                                                                  .entryDate ??
+                                                              DateTime.now())),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      }),
                                 ),
                               ],
                             ),
