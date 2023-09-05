@@ -133,19 +133,11 @@ class ImplApiRepository implements ApiRepository {
   }
 
   @override
-  Future<void> saveEntry(String uid, Entry entry, Category? selectedCategory) async {
-    // Check if the associated category exists
-    Category? category;
-    if (selectedCategory != null) {
-      // If a selected category is provided, use it
-      category = selectedCategory;
-    }
-    // If a categoryId is provided, fetch the category by ID
-
+  Future<void> saveEntry(String uid, Entry entry, int id) async {
     try {
       // Save the entry with the associated category
       final entryToSave = Entry(
-        category: category,
+        category: null,
         entryDate: entry.entryDate,
         id: entry.id,
         isInativo: entry.isInativo,
@@ -154,7 +146,7 @@ class ImplApiRepository implements ApiRepository {
         uid: entry.uid,
         uidFirebase: uid,
         isChanged: entry.isChanged,
-        categoryId: category?.id ?? 0, // Use the ID of the associated category
+        categoryId: id, // Use the ID of the associated category
         entryType: entry.entryType,
         name: entry.name,
         value: entry.value,
@@ -173,7 +165,8 @@ class ImplApiRepository implements ApiRepository {
 
   @override
   Future<void> updateEntry(
-      String uid, Entry entry, Category? selectedCategory) async {
+      String uid, Entry entry, int id) async {
+        // Assuming you have a copyWith method for Entry
     try {
       // Create a new Entry object with updated properties but keep the same Category
       final updatedEntry = Entry(
@@ -186,15 +179,27 @@ class ImplApiRepository implements ApiRepository {
         uid: entry.uid,
         uidFirebase: uid,
         isChanged: entry.isChanged,
-        categoryId: entry.categoryId,
+        categoryId: id,
         entryType: entry.entryType,
         name: entry.name,
         value: entry.value,
       );
 
-      await saveEntry(uid, updatedEntry, selectedCategory);
+      await saveEntry(uid, updatedEntry, id);
     } on DioException catch (e) {
       throw Exception(e.message);
+    }
+  }
+
+    Future<bool> isValidCategory(String uid, int categoryId) async {
+    try {
+      Category? category = await getDataById(uid, categoryId);
+      if (category.isInativo == true) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

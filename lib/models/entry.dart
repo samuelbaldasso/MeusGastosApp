@@ -7,9 +7,9 @@ class Entry {
   final String name;
   String? entryType;
   final double value;
-  final int categoryId;
+  int categoryId;
   final Category? category;
-  final DateTime? entryDate;
+  DateTime? entryDate;
   final int? id;
   final bool? isInativo;
   final DateTime? dateCreated;
@@ -33,7 +33,6 @@ class Entry {
     this.uidFirebase,
     this.isChanged,
   });
-  
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -59,7 +58,9 @@ class Entry {
   factory Entry.fromMap(Map<String, dynamic> map) {
     return Entry(
       categoryId: map["CategoryId"] ?? 0,
-      category: map["Category"] ?? Category(name: map["Name"] ?? "", description: map["Description"] ?? ""),
+      category: map["Category"] ??
+          Category(
+              name: map["Name"] ?? "", description: map["Description"] ?? ""),
       name: map['Name'] ?? '',
       entryType: map['EntryType'] is String
           ? map['EntryType']
@@ -76,6 +77,8 @@ class Entry {
       uid: map['Uid'] ?? '',
       uidFirebase: map['UidFirebase'] ?? '',
       isChanged: map['IsChanged'] ?? false,
+      entryDate: map['EntryDate'] is String ? DateTime.tryParse(map['EntryDate']) : DateTime.now()
+
     );
   }
 
@@ -83,4 +86,36 @@ class Entry {
 
   factory Entry.fromJson(String source) =>
       Entry.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  Entry copyWith({
+    String? name,
+    String? entryType,
+    double? value,
+    int? categoryId,
+    Category? category,
+    DateTime? entryDate,
+    int? id,
+    bool? isInativo,
+    DateTime? dateCreated,
+    DateTime? dateUpdated,
+    String? uid,
+    String? uidFirebase,
+    bool? isChanged,
+  }) {
+    return Entry(
+      name: name ?? this.name,
+      entryType: entryType ?? this.entryType,
+      value: value ?? this.value,
+      categoryId: categoryId ?? this.categoryId,
+      category: category ?? this.category,
+      entryDate: entryDate ?? this.entryDate,
+      id: id ?? this.id,
+      isInativo: isInativo ?? this.isInativo,
+      dateCreated: dateCreated ?? this.dateCreated,
+      dateUpdated: dateUpdated ?? this.dateUpdated,
+      uid: uid ?? this.uid,
+      uidFirebase: uidFirebase ?? this.uidFirebase,
+      isChanged: isChanged ?? this.isChanged,
+    );
+  }
 }
