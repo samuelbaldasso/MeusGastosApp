@@ -341,10 +341,9 @@ class _ExpensesListState
                                               );
                                             }
 
-                                            // // Optionally, refresh the list to reflect the changes
-                                            // await controller.loadExpenses();
+                                            await controller.loadExpenses();
 
-                                            nav.popAndPushNamed("/home");
+                                            nav.pushNamed("/home");
                                           } else if (direction ==
                                               DismissDirection.startToEnd) {
                                             showModalBottomSheet(
@@ -601,7 +600,8 @@ class _ExpensesListState
                                                                             BorderRadius.circular(10.0)),
                                                                     child: StatefulBuilder(builder:
                                                                         (context,
-                                                                            setState) {
+                                                                            setState){
+                                                                      
                                                                       return DropdownButton<
                                                                               Category>(
                                                                           items: state.categories.map((Category
@@ -621,7 +621,8 @@ class _ExpensesListState
                                                                           // underline:
                                                                           //     const SizedBox(),
                                                                           onChanged: (Category?
-                                                                              newValue) {
+                                                                              newValue) async {
+                                                                              await controller.loadExpenses();
                                                                             setState(() {
                                                                               selectedCategory = newValue;
                                                                             });

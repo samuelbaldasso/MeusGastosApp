@@ -189,7 +189,7 @@ class _CategoriesListState
                                                   seconds: 2,
                                                 ),
                                               ));
-                                              nav.pop();
+                                              nav.pushNamed("/home");
                                               controller.loadCategories();
                                               controller.loadExpenses();
                                             }
@@ -258,11 +258,12 @@ class _CategoriesListState
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 16.0),
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Categorias",
+                          "Minhas Categorias",
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -488,7 +489,7 @@ class _CategoriesListState
                                                                     index]
                                                                 .uidFirebase,
                                                           ));
-                                                          nav.pop();
+                                                          nav.pushNamed("/home");
                                                         }
                                                       },
                                                       style: ElevatedButton
