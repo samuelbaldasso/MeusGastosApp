@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meus_gastos/models/category.dart';
 import 'package:meus_gastos/models/entry.dart';
@@ -45,7 +46,69 @@ class ExpensesListController extends Cubit<ExpensesListState> {
     }
   }
 
-    Future<void> deleteCategory(Category category) async {
+  Future<void> loadExpensesWeek() async {
+    try {
+      emit(state.copyWith(status: ExpensesListStatus.loading));
+      DateTime today = DateTime.now();
+      DateTime startDate =
+          DateTime(today.year, today.month, today.day); // start of today
+      DateTime endDate = startDate
+          .add(const Duration(days: 7))
+          .subtract(const Duration(seconds: 1)); // end of 7th day
+      final uid = await authRepository.getUid();
+      final allExpenses = await apiRepository.getEntries(uid);
+
+     var filteredExpenses = allExpenses.where((element) {
+        return (element.entryDate ?? DateTime.now()).isAfter(startDate) &&
+            (element.entryDate ?? DateTime.now()).isBefore(endDate);
+      }).toList();
+
+      final categoriesList = await apiRepository.getData(uid);
+
+      emit(state.copyWith(
+        status: ExpensesListStatus.loaded,
+        expenses: filteredExpenses.isNotEmpty ? filteredExpenses : allExpenses,
+        categories: categoriesList,
+      ));
+    } catch (e, s) {
+      log("Erro ao carregar gasto.", error: e, stackTrace: s);
+      emit(state.copyWith(status: ExpensesListStatus.error));
+      throw Exception("$e, $s");
+    }
+  }
+
+  Future<void> loadExpensesMonth() async {
+    try {
+      emit(state.copyWith(status: ExpensesListStatus.loading));
+      DateTime today = DateTime.now();
+      DateTime startDate =
+          DateTime(today.year, today.month, today.day); // start of today
+      DateTime endDate = startDate
+          .add(const Duration(days: 30))
+          .subtract(const Duration(seconds: 1)); // end of 30th day
+      final uid = await authRepository.getUid();
+      final allExpenses = await apiRepository.getEntries(uid);
+
+      var filteredExpenses = allExpenses.where((element) {
+        return (element.entryDate ?? DateTime.now()).isAfter(startDate) &&
+            (element.entryDate ?? DateTime.now()).isBefore(endDate);
+      }).toList();
+
+      final categoriesList = await apiRepository.getData(uid);
+
+      emit(state.copyWith(
+        status: ExpensesListStatus.loaded,
+        expenses: filteredExpenses.isNotEmpty ? filteredExpenses : allExpenses,
+        categories: categoriesList,
+      ));
+    } catch (e, s) {
+      log("Erro ao carregar gasto.", error: e, stackTrace: s);
+      emit(state.copyWith(status: ExpensesListStatus.error));
+      throw Exception("$e, $s");
+    }
+  }
+
+  Future<void> deleteCategory(Category category) async {
     try {
       emit(state.copyWith(status: ExpensesListStatus.loading));
       final uid = await authRepository.getUid();
@@ -53,7 +116,9 @@ class ExpensesListController extends Cubit<ExpensesListState> {
       final updatedCategories =
           state.categories.where((c) => c.id != category.id).toList();
       emit(state.copyWith(
-          status: ExpensesListStatus.loaded, categories: updatedCategories, expenses: expenses));
+          status: ExpensesListStatus.loaded,
+          categories: updatedCategories,
+          expenses: expenses));
     } catch (e, s) {
       log("Erro ao remover categoria.", error: e, stackTrace: s);
       emit(state.copyWith(status: ExpensesListStatus.error));
@@ -69,7 +134,7 @@ class ExpensesListController extends Cubit<ExpensesListState> {
 
       // Add the new entry to the existing list of expenses
       List<Entry> updatedExpenses = await apiRepository.getEntries(uid);
-      
+
       emit(state.copyWith(
         status: ExpensesListStatus.loaded,
         expenses: updatedExpenses,
