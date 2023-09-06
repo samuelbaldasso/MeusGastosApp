@@ -10,12 +10,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int? selectedIndex = 1;
+  int? selectedIndex = 0; // Initialize with 0 for default page
+
+  // Create the page instances here
+  final expensesPage = ExpensesListRouter.page;
+  final categoriesPage = CategoriesListRouter.page;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-          //Create a logic for selectedIndex
           onTap: (int index) {
             setState(() {
               selectedIndex = index;
@@ -23,20 +27,22 @@ class _HomePageState extends State<HomePage> {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.money_outlined,
-              ),
+              icon: Icon(Icons.money_outlined),
               label: 'Lançamentos',
             ),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.check_box_outlined,
-                ),
+                icon: Icon(Icons.check_box_outlined),
                 label: 'Categorias',
-                ),
+            ),
           ],
         ),
-        body: selectedIndex == 1 ? CategoriesListRouter.page : ExpensesListRouter.page,
+        body: IndexedStack(
+            index: selectedIndex,
+            children: [
+              expensesPage,
+              categoriesPage,
+            ],
+        ),
     ); 
   }
 }
