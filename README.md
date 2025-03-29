@@ -31,8 +31,8 @@ O app Meus Gastos é uma aplicação desenvolvida em Flutter para ajudar os usu�
 
 1. Clone o repositório:
     ```sh
-    git clone https://github.com/samuelbaldaso/Meus_Gastos-Dart-Flutter-REST_API-BLOC-Provider-Firebase.git
-    cd Meus_Gastos-Dart-Flutter-REST_API-BLOC-Provider-Firebase
+    git clone https://github.com/samuelbaldaso/MeusGastosApp.git
+    cd MeusGastosApp
     ```
 
 2. Instale as dependências:
