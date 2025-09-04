@@ -17,8 +17,7 @@ O app Meus Gastos é uma aplicação desenvolvida em Flutter para ajudar os usu�
 
 - **Flutter**: Framework de desenvolvimento de aplicativos móveis.
 - **Firebase**: Plataforma de backend para autenticação, banco de dados em tempo real e armazenamento.
-- **BLOC**: Padrão de gerenciamento de estado.
-- **Provider**: Pacote de gerenciamento de estado do Flutter.
+- **BLOC + Provider**: Pacotes padrão de gerenciamento de estado do Flutter no projeto.
 
 ## Como Rodar o Projeto
 
